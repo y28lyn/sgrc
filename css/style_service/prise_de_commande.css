@@ -1,0 +1,52 @@
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+}
+/* grid card */
+.numero_table {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.6rem;
+}
+.titre {
+  font-size: 1.4rem;
+  grid-column: 1 / 3;
+}
+/* Card numero-table */
+.numero_table {
+  background: var(--color-white);
+  padding: 25px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  margin: 10%;
+}
+input[type="submit"] {
+  width: 5rem;
+  display: inline-flex;
+  height: 50px;
+  padding: 0;
+  background: #7380ec;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-dark);
+  align-items: center;
+  padding: 0 10px;
+  margin-right: 1.6rem;
+  margin-bottom: 1.6rem;
+}
+input:hover {
+  background: #7350ec;
+}
+input:active {
+  background: #7370ec;
+}

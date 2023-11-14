@@ -1,0 +1,186 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+/* Corps de la page */
+body {
+  overflow: hidden;
+  background-color: #000;
+}
+/* Section contenant le formuliare */
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url("/SGRC/image/img/source/login.jpg");
+  background-size: cover;
+  background-position: bottom;
+}
+
+.box {
+  position: relative;
+}
+
+.container {
+  position: relative;
+  width: 400px;
+  min-height: 400px;
+  /* background-color: rgba(255, 255, 255, 0.1); */
+  /* border-radius: 10px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* backdrop-filter: 5px; */
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  /* CARD EFFET MAX */
+  background: linear-gradient(
+    147.06deg,
+    rgba(255, 255, 255, 0.5) 2.6%,
+    rgba(255, 255, 255, 0.1) 97.96%
+  );
+  backdrop-filter: blur(25px);
+  border-radius: 15px;
+}
+.form {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+}
+.form h2 {
+  position: relative;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+}
+.form h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 150px;
+  height: 4px;
+  background-color: #fff;
+}
+.form .inputBox {
+  width: 100%;
+  margin-top: 20px;
+}
+.form .inputBox input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  border-radius: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+}
+.form .inputBox input::placeholder {
+  color: #fff;
+}
+.form .inputBox input[type="submit"] {
+  background-color: #fff;
+  color: #000;
+  max-width: 150px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.form .inputBox input[type="submit"]:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.forget a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  float: right;
+}
+/* Media pour petit ecran */
+@media screen and (max-width: 512px) {
+  .container {
+    width: auto;
+    margin: 25px;
+  }
+}
+
+#erreur {
+  font-size: 14px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+/* Style Eyes */
+
+label {
+  position: relative;
+}
+.password {
+  width: 100%;
+  margin-top: 20px;
+}
+
+label input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  border-radius: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+}
+.password label input::placeholder {
+  color: #fff;
+}
+
+label .password-icon {
+  display: flex;
+  align-items: center;
+
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 20px;
+
+  color: #f9f9f9;
+  transition: all 0.2s;
+}
+
+label .password-icon:hover {
+  cursor: pointer;
+  color: #000;
+}
+
+label .password-icon .feather-eye {
+  display: none;
+}
+/* Error text */
+.error-txt {
+  color: #721c24;
+  background: #f8d7da;
+  padding: 8px 10px;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #f5c6cb;
+  display: block;
+}

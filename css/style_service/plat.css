@@ -1,0 +1,260 @@
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--color-dark);
+}
+
+/* SCROLL PAGE */
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+body::-webkit-scrollbar-track {
+  background: var(--color-scroll);
+}
+body::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background: var(--color-primary);
+}
+body::-webkit-scrollbar-thumb:hover  {
+  background: var(--color-dark-variant);
+}
+/* Media pour le scroll */
+@media screen and (max-width: 768px) {
+  ::-webkit-scrollbar {
+    display: none; /*For remainder of the browsers*/
+  }
+}
+
+
+/*===== FORM =====*/
+.plat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.container {
+  background-color: var(--color-white);
+  padding: 25px;
+  border-radius: 1rem;
+}
+
+.tab-content{
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+.sub-tab-button{
+  margin: 10px;
+  width: 200px;
+}
+
+table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.tab-content table td {
+   background-color: var(--color-primary); 
+  padding: 5px;
+}
+
+
+.tab-content table td input[type=number] {
+  width: 40px;
+  height: 40px;
+  text-align: center;  
+  margin: 0 5px;  
+}
+
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tab-content table td form{
+  display: flex;
+  align-items: center;
+}
+
+.quantity{
+  display: flex;  
+  flex-direction: row;
+  align-content: center;
+}
+
+.quantity button{
+  width: 50px;
+  height: 40px;
+  border-radius: 15px;
+  border: none;
+}
+
+.quantity-ticket .quantity-minus, .quantity-minus{
+  margin: 5px;
+  width: 30px;
+  border-radius: 5px;
+  background-color: #d32727;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.quantity-ticket:hover .quantity-minus:hover, .quantity-minus:hover{
+  background-color: #a01c1c;
+}
+
+.quantity-plus{
+  margin: 5px;
+  width: 35px;
+  border-radius: 5px;
+  border: solid black;
+  background-color: #2cc934;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#valider {
+  background-color: #0ea39c;
+  width: 100px;
+  height: 35px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-dark);
+  padding: 0 10px;
+  margin: 5px 10px;
+}
+
+.texte1 {
+  text-align: center;
+  margin-top: 5vh;
+}
+.texte2 {
+  text-align: center;
+  margin-top: 2vh;
+}
+.texte2 i {
+  color: var(--color-primary);
+  cursor: pointer;
+}
+.texte3 {
+  text-align: center;
+  margin-top: 2vh;
+  margin-bottom: 5vh;
+}
+
+.back_btn {
+  position: absolute;
+  /* Tablette */
+  /* top: 63vh;
+  left: 80vw; */
+  /* PC */
+  top: 5px;
+  left: 560px;
+}
+
+td button{
+  margin: 5px;
+}
+
+.commentaire {
+  padding: 2px;
+}
+
+.btn_modifier {
+  margin-right: 8px;
+}
+.btn_modifier,
+.btn_supprimer {
+  padding: 4px;
+  background-color: var(--color-primary);
+  cursor: pointer;
+  color: var(--color-dark);
+  border: none;
+  outline: none;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+@media only screen and (orientation: landscape) {
+  .texte3 {
+    text-align: center;
+    margin-top: 2vh;
+    margin-bottom: 5vh;
+  }
+}
+
+.ticket_de_caisse button{
+  background: transparent;
+  border: none;
+}
+
+.ticket_de_caisse i{
+  color: var(--color-primary);
+}
+
+.tab-button{
+  padding: 4px;
+  background-color: var(--color-info-dark);
+  cursor: pointer;
+  color: var(--color-dark);
+  border: none;
+  outline: none;
+  border-radius: 3px;
+  overflow: hidden;
+  width: 100px;
+  height: 40px;
+}
+.ticket_de_caisse{
+  background-color: var(--color-ticket);
+  border-radius: 1rem;
+  width: 400px;
+  float: right;
+  right: 0px;
+  top: 50%;
+  transform: translate(-10%, -50);
+  position: fixed;
+  top: 60px;
+  overflow-y: scroll;
+  height: 80%;
+  padding-left: 10px;
+  }
+
+.ticket_de_caisse td{
+  margin: 5px;
+}
+
+.ticket_de_caisse::-webkit-scrollbar{
+  display: none;
+}
+.container_ticket {
+  background-color: var(--color-ticket);
+  float: none;
+  width: 200px;
+  align-items: center;
+}
+@media(max-width: 1400px){
+  .ticket_de_caisse{
+  margin-bottom: 100px;
+  background-color: var(--color-ticket);
+  border-radius: 1rem;
+  width: 500px;
+  float: none;
+  align-items: center;
+  transform: none;
+  margin-left:auto;
+  margin-right:auto;
+  position: relative;
+}
+}

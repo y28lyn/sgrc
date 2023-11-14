@@ -1,0 +1,31 @@
+/* Conteneur des ticket */
+.card_ticket {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+/* Caption (titre) */
+caption {
+  margin-bottom: 10px;
+}
+/* Table */
+.ticket {
+  background-color: var(--color-white);
+  border-radius: 15px 15px 5px 5px;
+  padding: 10px;
+  overflow: hidden;
+  margin: 50px 15px 15px 15px;
+}
+td,
+th {
+  text-align: center;
+}
+td {
+  border: 1px solid #7380ec;
+  color: var(--color-dark-variant);
+}
+/* Ligne du commentaire */
+.commentaire {
+  width: 200px;
+  word-wrap: break-word;
+}

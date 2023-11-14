@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500&display=swap");
+:root {
+  --color-primary: #7380ec;
+  --color-danger: #ff7782;
+  --color-success: #41f1b6;
+  --color-warning: #ffbb55;
+  --color-white: #fff;
+  --color-info-dark: #7d8da1;
+  --color-info-light: #dce1eb;
+  --color-dark: #363949;
+  --color-light: rgba(132, 139, 200, 0.18);
+  --color-primary-variant: #111e88;
+  --color-dark-variant: #677483;
+  --color-background: #f6f6f9;
+  --color-scroll: #e5e5e5;
+
+  --card-border-radius: 2rem;
+  --boder-radius-1: 0.4rem;
+  --boder-radius-2: 0.8rem;
+  --boder-radius-3: 1.2rem;
+
+  --card-padding: 1.8rem;
+  --padding-1: 1.2rem;
+  --box-shadow: 0 2rem 3rem var(--color-light);
+}
+/* --------------- DARK THEME VARIABLE --------------- */
+.dark-theme-variables {
+  --color-background: #181a1e;
+  --color-white: #202528;
+  --color-dark: #edeffd;
+  --color-dark-variant: #a3bdcc;
+  --color-light: rgba(0, 0, 0, 0.4);
+  --box-shadow: 0 2rem 3rem var(--color-light);
+  --color-scroll: #677483;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background-color: var(--color-background);
+  color: var(--color-dark);
+}
+/* Conteneur des tickets */
+
+.card_ticket {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Style de la table */
+.ticket {
+  background-color: #7380ec;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+}
+
+/* Titre de la table */
+.ticket h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: var(--color-primary); /* Utilisez la couleur principale de votre palette */
+}
+
+/* Tableau */
+.ticket table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+/* Ligne du tableau */
+.ticket tr {
+  border-bottom: 1px solid #ccc;
+}
+
+/* En-tête du tableau */
+.ticket th {
+  padding: 10px;
+  background-color: var(--color-primary); /* Utilisez la couleur principale de votre palette */
+  color: #fff;
+}
+
+/* Cellules du tableau */
+.ticket td {
+  padding: 10px;
+  text-align: center;
+  color: #fff;
+  border: 1px solid #ddd;
+}
+
+/* Prix total */
+.ticket .total {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--color-primary); /* Utilisez la couleur principale de votre palette */
+  
+}
+
+/* Bouton de paiement */
+/* Style du bouton "Payer" */
+input[type="submit"] {
+  background-color:#7380ec; /* Couleur de fond */
+  color: #fff; /* Couleur du texte */
+  border: none; /* Supprime la bordure */
+  padding: 10px 20px; /* Espacement intérieur */
+  border-radius: 10px; /* Coins arrondis */
+  font-size: 12px; /* Taille de police */
+  cursor: pointer; /* Curseur pointer au survol */
+  transition: background-color 0.3s; /* Transition de couleur au survol */
+}
+
+/* Style au survol du bouton */
+input[type="submit"]:hover {
+  background-color: black; /* Nouvelle couleur de fond au survol */
+}
+
+/* Ligne du commentaire */
+.commentaire {
+  width: 200px;
+  word-wrap: break-word;
+}
