@@ -1,4 +1,4 @@
-# <img src="https://github.com/y28lyn/sgrc/assets/97447648/515bb1d4-a916-4796-8c39-5d80e4417b77" alt="Nom de l'image" width="30" height="30"> Projet "La Table d'Hélène"
+# <img src="https://github.com/y28lyn/sgrc/assets/97447648/515bb1d4-a916-4796-8c39-5d80e4417b77" alt="" width="30" height="30"> Projet "La Table d'Hélène"
 
 ## Description
 
