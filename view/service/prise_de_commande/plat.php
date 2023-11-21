@@ -102,7 +102,8 @@ if ($_SESSION["role"] == "service") {
                                 echo '<table border="0">';
                                 foreach($plats as $plat){
                                     $id_p = $plat['id_plat'];
-                                    echo '<tr><td>' . $plat['nom_plat'] . '</td><td>' . $plat['description'] . '</td>';
+                                    echo '<tr><td>' . $plat['nom_plat'] . '<br> <p class="descPlat">' .'Desc : '. $plat['description'] . ' </p></td>';
+                                    echo '<td>' . $plat['PU_carte'] . '€</td>';
                                     echo '<td>';
                                     // boutons +
                                     echo '<form method="POST">';
@@ -212,6 +213,7 @@ if ($_SESSION["role"] == "service") {
                                 <!--Affichage nom du palt-->
                                 <td class="titre" style="color:black">
                                     <?php echo $plat['nom_plat']; ?>
+                                    
                                 </td>
 
                                 <!--Affichez quantite du palt-->
