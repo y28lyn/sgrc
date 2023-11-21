@@ -120,6 +120,10 @@ input[type=number]::-webkit-inner-spin-button {
   font-weight: bold;
 }
 
+.descPlat{
+  font-size: 12px;
+}
+
 #valider {
   background-color: #0ea39c;
   width: 100px;
