@@ -254,7 +254,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"]) && $_POST["a
     // Exécutez la requête
     if ($stmt->execute()) {
         // Redirigez l'utilisateur vers la page de la catégorie après la suppression
-        header("Location: ?page=categorie");
+        header("Location: ?page=sous_categorie");
         exit();
     } else {
         // Gérez l'erreur si la suppression échoue

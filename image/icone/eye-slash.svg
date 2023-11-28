@@ -3,7 +3,7 @@
 
     <style>
         svg {
-            fill: #7380ec
+            fill: rgba(115,127,236,0.5)
         }
     </style>
     <path

@@ -3,7 +3,7 @@ if (!isset($_SESSION)) {
     session_start();
 }
 if ($_SESSION["role"] == "admin") {
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="fr">
 
@@ -21,7 +21,7 @@ if ($_SESSION["role"] == "admin") {
     <body>
         <!--Container -->
         <div class="container">
-        <aside>
+            <aside>
                 <!-- MENU (logo & titre & bouton fermer) -->
                 <div class="top">
                     <div class="logo">
@@ -94,7 +94,7 @@ if ($_SESSION["role"] == "admin") {
                         </thread>
                         <?php
                         foreach ($tables as $table) {
-                            ?>
+                        ?>
                             <tbody>
                                 <tr>
                                     <td>
@@ -106,23 +106,42 @@ if ($_SESSION["role"] == "admin") {
                                     <td>
                                         <table>
                                             <tr>
-                                                
                                                 <td>
                                                     <!-- Modifier -->
                                                     <form method="post" action="?page=modif_table">
-                                                        <input type="hidden" name="id_t"
-                                                            value="<?php echo $table['id_table']; ?>">
-                                                        <button type="submit" value="modifier" class="btn btn-primmary"><img class="icon_size" src="image\icone\pen-to-square.svg" alt="Icone Edit Categorie"></button>
+                                                        <input type="hidden" name="id_t" value="<?php echo $table['id_table']; ?>">
+                                                        <button type="submit" value="modifier" class="btn btn-primmary">
+                                                            <img class="icon_size" src="image\icone\pen-to-square.svg" alt="Icone Edit Categorie">
+                                                        </button>
                                                     </form>
                                                 </td>
+
+                                                <!-- Visible/Invisible-->
+                                                <td>
+                                                    <form method="post" action="">
+                                                        <input type="hidden" name="action" value="vis table">
+                                                        <input type="hidden" name="id_table" value="<?php echo $table['id_table']; ?>">
+                                                        <button id="visibility-toggle" type="submit" onclick="return confirm ('Êtes-vous sûr de vouloir la cacher ? ')">
+                                                            <?php
+                                                            if ($table['vu'] == '0') {
+                                                                echo '<img class="icon_size" src="image\icone\eye.svg" alt="Afficher">';
+                                                                $visible = 1;
+                                                            } else {
+                                                                echo '<img class="icon_size" src="image\icone\eye-slash.svg" alt="Cacher">';
+                                                                $visible = 0;
+                                                            }
+                                                            ?>
+                                                            <input type="hidden" name="visibilite" value="<?php echo $visible; ?>">
+                                                        </button>
+                                                    </form>
+                                                </td>
+
                                                 <td>
                                                     <!-- Supprimer -->
                                                     <form method="post" action="">
                                                         <input type="hidden" name="action" value="suppr table">
-                                                        <input type="hidden" name="id_table"
-                                                            value="<?php echo $table['id_table']; ?>">
-                                                        <button type="submit"
-                                                            onclick="return confirm ('êtes-vous sûr de vouloir supprimer ?')">
+                                                        <input type="hidden" name="id_table" value="<?php echo $table['id_table']; ?>">
+                                                        <button type="submit" onclick="return confirm ('êtes-vous sûr de vouloir supprimer ?')">
                                                             <img class="icon_size" src="image\icone\trash.svg" alt="Icone Delete Categorie">
                                                         </button>
                                                     </form>
@@ -132,7 +151,7 @@ if ($_SESSION["role"] == "admin") {
                                     </td>
                                 </tr>
                             </tbody>
-                            <?php
+                        <?php
                         }
                         ?>
                         <!-- Ligne ajout -->
@@ -184,7 +203,7 @@ if ($_SESSION["role"] == "admin") {
     </body>
 
     </html>
-    <?php
+<?php
 } else {
     echo ("vous n'avez pas le droit d'être là");
     header("Location:../../../index.php");
