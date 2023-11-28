@@ -236,6 +236,7 @@ td button{
   }
 
 .ticket_de_caisse td{
+  padding-right: 10px;
   margin: 5px;
 }
 
