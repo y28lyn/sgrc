@@ -100,6 +100,7 @@ if ($_SESSION["role"] == "service") {
                                 $statmt30->execute();
                                 $plats = $statmt30->fetchAll(PDO::FETCH_ASSOC);
                                 echo '<table border="0">';
+                                echo '<tr class="nomColonne"><td> Nom du plat </p></td><td> Prix </td><td> Quantité </td></tr>';
                                 foreach($plats as $plat){
                                     $id_p = $plat['id_plat'];
                                     echo '<tr><td>' . $plat['nom_plat'] . '<br> <p class="descPlat">' .'Desc : '. $plat['description'] . ' </p></td>';
@@ -232,7 +233,7 @@ if ($_SESSION["role"] == "service") {
                                 </td>
                                 <!--Affichage bouton validation form commentaire-->
                                 <td>
-                                        <button type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
+                                        <button class="logo" type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
                                     </form>
                                 </td>
 
@@ -240,7 +241,7 @@ if ($_SESSION["role"] == "service") {
                                 <!--Form et bouton suppression d'un plat-->
                                 <td>
                                     <form method="POST">
-                                    <button type="submit"> <i class="fa-solid fa-trash-can"></i></button>
+                                    <button class="logo" type="submit"> <i class="fa-solid fa-trash-can"></i></button>
                                         <input type="hidden" name="action" value="supprimer_ligne_ticket">
                                         <input type="hidden" name="id_ligne_ticket" value="<?php echo $plat['id_ligne_ticket']; ?>">
                                     </form>
