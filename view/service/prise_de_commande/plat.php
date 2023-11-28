@@ -81,8 +81,6 @@ if ($_SESSION["role"] == "service") {
                     } ?>
                 </div>
                 <?php
-                $statmt28->execute();
-                $categories = $statmt28->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($categories as $categorie){
                 
                     $cat = $categorie['id_cat'];

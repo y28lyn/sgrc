@@ -707,14 +707,21 @@ if (isset($_SESSION["role"])) {
                                 break;
                             }
 
-                        case "carte_menu": {
+                            case "carte_menu": {
                                 if (isset($_SESSION['id_m'])) {
                                     $id_m = $_SESSION['id_m'];
+                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
                                     $requete_carte = $pdo->prepare("SELECT P.id_plat, P.nom_plat, P.description, P.type_plat, S.nom_sous_cat, P.PU_carte from menu_contient_plat MP, plat P, sous_categorie S, menu M WHERE MP.id_menu=M.id_menu AND MP.id_plat=P.id_plat AND P.id_sous_cat = S.id_sous_cat AND P.vu=0 and MP.id_menu = :id_m ORDER BY S.ordre_aff_sous_cat asc;");
                                     $requete_carte->bindParam(':id_m', $id_m, PDO::PARAM_INT);
                                     $requete_carte->execute();
                                     $cartes = $requete_carte->fetchAll();
-
+                                    
+                                    //$statmt29 = $pdo->prepare('SELECT * FROM sous_categorie inner join plat on plat.id_sous_cat = sous_categorie.id_sous_cat where id_cat = :idcat AND (SELECT COUNT(P.id_plat) FROM menu M, plat P, menu_contient_plat MP,sous_categorie SC WHERE P.id_plat=MP.id_plat AND M.id_menu=MP.id_menu and P.id_sous_cat=SC.id_sous_cat and P.id_sous_cat = :idsouscat and P.vu = 0 and M.date_menu = CURDATE()) is not null GROUP BY nom_sous_cat ORDER BY ordre_aff_sous_cat'); /*  */
+                                    //$statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+                                    //$statmt29->bindParam(':idsouscat', $sous_cat, PDO::PARAM_INT);
+                                    //$statmt29->execute();
+                                    //$cat_plats = $statmt29->fetchAll(PDO::FETCH_ASSOC);
+                                    $statmt = $pdo->prepare('SELECT sc.nom_sous_cat, sc.id_sous_cat, sc.id_cat FROM sous_categorie sc INNER JOIN categorie_plat c ON sc.id_cat = c.id_cat');
                                     include "view/admin/produit/modifier/carte_menu.php";
 
                                 } else {

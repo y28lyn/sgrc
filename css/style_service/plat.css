@@ -40,6 +40,9 @@ body::-webkit-scrollbar-thumb:hover  {
   padding: 25px;
   border-radius: 1rem;
 }
+.tabs {
+  text-align: center;
+}
 
 .tab-content{
   flex-direction: column;
