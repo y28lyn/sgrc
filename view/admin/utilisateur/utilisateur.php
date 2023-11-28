@@ -108,9 +108,6 @@ if ($_SESSION["role"] == "admin") {
                                         <?php echo $user['role']; ?>
                                     </td>
                                     <td>
-                                        <?php echo $user['mdp']; ?>
-                                    </td>
-                                    <td>
                                         <!-- Formulaire pour modifier l'utilisateur -->
                                         <form action="?page=modif_utilisateur" method="post">
                                             <input type="hidden" name="id_user" value="<?php echo $user['id_user']; ?>">

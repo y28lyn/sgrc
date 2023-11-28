@@ -29,7 +29,7 @@ if (isset($_SESSION['id_user'])) { //id user is logged
                     }
                     ?>
                     
-                    
+
                         <!-- Login -->
                         <div class="inputBox">
                             <input type="text" placeholder="Login" name="login" id="login" autocomplete="off"
@@ -40,7 +40,6 @@ if (isset($_SESSION['id_user'])) { //id user is logged
                             <label class="password">
                                 <input type="password" placeholder="Mot de passe" name="mdp" id="mdp" autocomplete="off"
                                     required>
-
                                 <div class="password-icon">
                                     <i data-feather="eye"></i>
                                     <i data-feather="eye-off"></i>
@@ -51,8 +50,6 @@ if (isset($_SESSION['id_user'])) { //id user is logged
                         <div class="inputBox button">
                             <input type="submit" value="Connexion" />
                         </div>
-                        <!-- Mot de passe oublié -->
-                        <p class="forget"><a href="#">Mot de passe oublié ?</a></p>
                     </form>
                 </div>
             </div>
