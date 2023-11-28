@@ -9,7 +9,7 @@ if ($_SESSION["role"] == "admin") {
     $re = $pdo->query($Requete_edit_plat);
     $plat = $re->fetchALL(PDO::FETCH_ASSOC);
 
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="fr">
 
@@ -36,34 +36,41 @@ if ($_SESSION["role"] == "admin") {
             <input name="id_plat" id="id_plat" type="hidden" value=<?php echo htmlspecialchars(($plat[0]['id_plat'])) ?>>
             <!-- Le nom du plat -->
             <label for="nom_plat">Nom du plat</label>
-            <input name="nom_plat" id="nom_plat" type="text"
-                value="<?php echo htmlspecialchars(($plat[0]['nom_plat'])) ?>"> <br>
+            <input name="nom_plat" id="nom_plat" type="text" value="<?php echo htmlspecialchars(($plat[0]['nom_plat'])) ?>"> <br>
             <!-- La description du plat -->
             <label for="description">Description du plat</label>
-            <input name="description" id="description" type="text"
-                value="<?php echo htmlspecialchars(($plat[0]['description'])) ?>"> <br>
+            <input name="description" id="description" type="text" value="<?php echo htmlspecialchars(($plat[0]['description'])) ?>"> <br>
+
             <!--sous-type plat-->
             <label for="sous_type_plat">Sous-type de plat</label>
             <select id="sous_type_plat" name="sous_type_plat">
                 <?php
                 // Boucle pour afficher chaque option
                 foreach ($souscats as $souscat) {
-                    ?>
-                    <option value="<?php echo $souscat['id_sous_cat']; ?>"><?php echo $souscat['nom_sous_cat']; ?> </option>
-                    <?php
+                    $id_sous_cat = htmlspecialchars($souscat['id_sous_cat']);
+                    $nom_sous_cat = htmlspecialchars($souscat['nom_sous_cat']);
+                ?>
+                    <option value="<?php echo $id_sous_cat; ?>" <?php echo ($plat[0]['id_sous_cat'] == $id_sous_cat ? 'selected' : ''); ?>>
+                        <?php echo $nom_sous_cat; ?>
+                    </option>
+                <?php
                 }
                 ?>
             </select><br>
+
+
             <!-- Le prix unitaire du plat -->
             <label for="PU_carte">Prix unitaire</label>
-            <input name="PU_carte" id="PU_carte" type="number" min="0" step="any"
-                value="<?php echo htmlspecialchars(($plat[0]['PU_carte'])) ?>"> <br>
+            <input name="PU_carte" id="PU_carte" type="number" min="0" step="any" value="<?php echo htmlspecialchars(($plat[0]['PU_carte'])) ?>"> <br>
+
             <!-- visible ou non-->
             <label for="vu">visible/invisible</label>
-            <select name="vu" id="vu" value="<?php echo htmlspecialchars(($table[0]['vu'])) ?>">
-                <option value="0">visible</option>
-                <option value="1">invisible</option>
+
+            <select name="vu" id="vu">
+                <option value="Visible" <?php echo ($plat[0]['vu'] == '0' ? 'selected' : ''); ?>>Visible</option>
+                <option value="Invisible" <?php echo ($plat[0]['vu'] == '1' ? 'selected' : ''); ?>>Invisible</option>
             </select>
+
             <br>
             <!-- Le bouton d'envoi -->
             <input type="submit" name="Validez" value="Modifier">
@@ -80,7 +87,7 @@ if ($_SESSION["role"] == "admin") {
     </body>
 
     </html>
-    <?php
+<?php
 } else {
     echo ("vous n'avez pas le droit d'être là");
     header("Location: /SGRC/index.php");

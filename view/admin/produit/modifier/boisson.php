@@ -40,32 +40,38 @@ if ($_SESSION["role"] == "admin") {
             <!-- La description du plat -->
             <label for="description">Description de la boisson</label>
             <input name="description" type="text" value="<?php echo  htmlspecialchars(($boisson[0]['description'])) ?>"> <br>
-            <!-- Le type de plat -->
+            <!--sous-type plat-->
             <label for="type_plat">Type de boisson</label>
-            <select id="type_plat" name="type_plat" value="<?php echo  htmlspecialchars(($boisson[0]['id_sous_cat'])) ?>">>
+            <select id="type_plat" name="type_plat">
                 <?php
                 // Boucle pour afficher chaque option
-                foreach($souscats as $souscat) {
-                    ?>
-                    <option value="<?php echo $souscat['id_sous_cat']; ?>"><?php echo $souscat['nom_sous_cat']; ?> </option>
-                    <?php
+                foreach ($souscats as $souscat) {
+                    $id_sous_cat = htmlspecialchars($souscat['id_sous_cat']);
+                    $nom_sous_cat = htmlspecialchars($souscat['nom_sous_cat']);
+                ?>
+                    <option value="<?php echo $id_sous_cat; ?>" <?php echo ($boisson[0]['id_sous_cat'] == $id_sous_cat ? 'selected' : ''); ?>>
+                        <?php echo $nom_sous_cat; ?>
+                    </option>
+                <?php
                 }
                 ?>
             </select><br>
             <!-- Le prix unitaire du plat -->
             <label for="PU_carte">Prix unitaire</label>
             <input name="PU_carte" type="number" min="0" step="any" value="<?php echo  htmlspecialchars(($boisson[0]['PU_carte'])) ?>"> <br>
-            <!-- visible ou non -->
+
+            <!-- visible ou non-->
             <label for="vu">visible/invisible</label>
-            <select name="vu" id="vu" value="<?php echo htmlspecialchars(($boisson[0]['vu']))?>">
-                <option value="0">visible</option>
-                <option value="1">invisible</option>
+
+            <select name="vu" id="vu">
+                <option value="Visible" <?php echo ($boisson[0]['vu'] == '0' ? 'selected' : ''); ?>>Visible</option>
+                <option value="Invisible" <?php echo ($boisson[0]['vu'] == '1' ? 'selected' : ''); ?>>Invisible</option>
             </select>
-            <br>
+
             <!-- Le bouton d'envoi -->
             <input type="submit" name="Validez" value="Modifier">
 
-             <br>
+            <br>
             <p style="color: red;" id="erreur"></p>
         </form>
         <!-- Script DarkMode -->
