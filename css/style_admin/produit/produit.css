@@ -71,6 +71,18 @@ main table tbody td {
   border-bottom: 1px solid var(--color-light);
   color: var(--color-dark-variant);
 }
+
+.nomColonne td {
+  color: #fff;
+}
+
+.tableauMenu td form{
+  padding: 0;
+  width: 100%;
+  box-shadow: none;
+  background: transparent;
+}
+
 /* Bouton d'ajoute d'element  colonne */
 .add td i {
   margin-top: 10px;

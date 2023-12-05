@@ -90,8 +90,8 @@ input[type=number]::-webkit-inner-spin-button {
 
 /* Style pour la première ligne (titres des colonnes) */
 .tab-content table tr:first-child {
-  background-color: #3498db; /* Couleur pour la première ligne */
-  color: #ffffff; /* Couleur du texte pour la première ligne */
+  background-color: #7380ec; /* Couleur pour la première ligne */
+  color: #ffffff !important; /* Couleur du texte pour la première ligne */
 }
 
 td {
@@ -106,7 +106,7 @@ td {
 
 /* Styles pour les boutons de quantité */
 .quantity button, .quantity-minus {
-  background-color: #3498db; /* Couleur bleue */
+  background-color: #7380ec; /* Couleur bleue */
   color: #ffffff; /* Couleur du texte en blanc */
   margin: 5px;
   width: 35px;
@@ -134,7 +134,7 @@ td {
 }
 
 #valider {
-  background-color: #3498db; /* Couleur verte */
+  background-color: #7380ec; /* Couleur verte */
   color: #ffffff; /* Couleur du texte en blanc */
   border: none;
   padding: 10px 10px;
@@ -180,6 +180,7 @@ td {
 
 td button{
   margin: 5px;
+  border: none;
 }
 
 .commentaire {
@@ -200,7 +201,7 @@ td button{
 }
 
 .ticket_de_caisse .quantity-minus {
-  background-color: #3498db;
+  background-color: #7380ec;
   height: 30px;
   width: 35px;
 }

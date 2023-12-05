@@ -55,7 +55,8 @@ if ($_SESSION["role"] == "admin") {
                 <button class="sub-tab-button" onclick="toggleSubTabContent('<?php echo $idsouscat; ?>')"><?php echo $id_sous_cat['nom_sous_cat'] ?></button>
                 <div class="sub-tab-content" id="sub-tab-content-<?php echo $idsouscat; ?>" style="display: none;">
                     <?php
-                    echo '<table border="0">';
+                    echo '<table class="tableauMenu" border="0">';
+                    echo '<tr class="nomColonne"><td> Nom du plat </p></td><td> Description </td><td> Prix </td><td> Action </td></tr>';
                     foreach ($cartes as $carte) {
                         if ($carte['nom_sous_cat'] === $id_sous_cat['nom_sous_cat']) {
                             // Tableau pour afficher les détails du plat
