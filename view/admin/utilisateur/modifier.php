@@ -38,7 +38,32 @@ if ($_SESSION["role"] == "admin") {
             <input name="login" id="login" type="text" value="<?php echo htmlspecialchars(($user[0]['login'])) ?>"> <br>
             <!--Rôle -->
             <label for="role">Rôle</label>
-            <input name="role" id="role" type="text" value="<?php echo htmlspecialchars(($user[0]['role'])) ?>"> <br>
+
+            <select name="role" id="role">
+                <?php
+                // Options manuelles
+                $optionsManuelles = array(
+                    "bar",
+                    "service",
+                    "cuisine",
+                    "caisse",
+                    "admin"
+                );
+                // Boucle pour les options manuelles
+                foreach ($optionsManuelles as $optionManuelle) {
+                    $selected =
+                        $user[0]["role"] == $optionManuelle
+                        ? "selected"
+                        : ""; ?>
+                    <option value="<?php echo $optionManuelle; ?>" <?php echo $selected; ?>>
+                        <?php echo $optionManuelle; ?>
+                    </option>
+                <?php
+                }
+                ?>
+            </select>
+
+            <br>
             <!-- Le prix unitaire du menu -->
             <label for="mdp">Mot de passe</label>
             <input name="mdp" id="mdp" type="password"> <br>
