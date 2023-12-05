@@ -17,8 +17,31 @@ if (isset($_SESSION["role"])) {
                                 $num_table = htmlspecialchars($_POST['numero_table']);
                                 $type_table = htmlspecialchars($_POST['type_table']);
                                 $vu_table = htmlspecialchars($_POST['vu']);
-                                $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
-                                header('location: /SGRC/index.php?page=table');
+
+                                $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
+                                $statmt->execute();
+                                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
+                                
+                                $compteur = 0;
+                                
+                                foreach ($tables as $table){
+                                    $tableNUM = $table['numero_table'];
+                                    if ( $tableNUM === $num_table) {
+                                        $compteur += 1;
+                                    }
+                                }
+
+                                if($compteur === 0){
+                                    $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
+                                    header('location: /SGRC/index.php?page=table');
+                                }
+                                else {
+                                    echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
+                                }
+
+                                $compteur = 0;
+                                
+                                
                                 break;
                             }
                         case "update table": {
@@ -571,7 +594,7 @@ if (isset($_SESSION["role"])) {
                 //recup de la liste des tables
                 $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
                 $statmt->execute();
-                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);;
+                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
 
                 //recup de la liste des boissons
                 $statmt3 = $pdo->prepare('SELECT * FROM plat INNER JOIN sous_categorie ON plat.id_sous_cat = sous_categorie.id_sous_cat WHERE id_cat != 1 ORDER BY vu ASC');
