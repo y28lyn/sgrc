@@ -97,11 +97,13 @@ input[type=number]::-webkit-inner-spin-button {
 
 /* Appliquez le style à chaque deuxième ligne du tableau */
 .tab-content table tr:nth-child(even) {
-  background-color: #dddcdc; /* Couleur pour les lignes paires */
+  background-color: var(--color-cartemenu-dark); /* Couleur pour les lignes paires */
+  color:var(--color-white);
 }
 
 .tab-content table tr:nth-child(odd) {
-  background-color: #ffffff; /* Couleur pour les lignes impaires */
+  background-color: var(--color-cartemenu-light)#ffffff; /* Couleur pour les lignes impaires */
+  color:var(--color-white);
 }
 
 /* Style pour la première ligne (titres des colonnes) */
