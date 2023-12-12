@@ -899,13 +899,60 @@ if (isset($_SESSION["role"])) {
 
         case "bar": {
                 //liste des requêtes de l'interface bar
+                if (isset($_POST) && isset($_POST['action']))
+                {
+                    switch($_POST['action'])
+                    {
+                        case "etatEnCours": {
+                            try{
+                                $id_ticket = $_POST['id_ticket'];
+                                $id_plat = $_POST['id_plat'];
+                                $etat = "Demandé";
+                                $statmt = $pdo->prepare('UPDATE ligne_ticket SET Etat = "En cours" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat');
+                                $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+                                $statmt->execute();
 
+                            }
+                            catch(PDOException $e){
+                                echo $e->getMessage();
+                            }
+                            
+                            break;
+                        }
+                        case 'etatPret':
+                            {
+                                try{
+                                    $id_ticket = $_POST['id_ticket'];
+                                    $id_plat = $_POST['id_plat'];
+
+                                    $etat = "En cours"; 
+                                    $statmt = $pdo->prepare('UPDATE ligne_ticket SET Etat ="Prêt" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat');
+                                    $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                    $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                    $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+                                    $statmt->execute();
+    
+                                }
+                                catch(PDOException $e){
+                                    echo $e->getMessage();
+                                }
+                                
+                                break;
+                            }
+                        default: {
+                            echo "erreur d'action: " . $_POST["action"];
+                            break;
+                        }
+                    }
+                }
                 // recup de la liste des tickets
                 $statmt16 = $pdo->prepare('SELECT ticket.*,sgr_table.* FROM ticket,sgr_table,ligne_ticket,plat WHERE statut != "PAY" AND plat.type_plat = "boisson" AND ticket.id_table = sgr_table.id_table AND ticket.id_ticket = ligne_ticket.id_ticket AND ligne_ticket.id_plat = plat.id_plat GROUP BY ticket.id_ticket');
                 $statmt16->execute();
                 $ticketsBar = $statmt16->fetchAll(PDO::FETCH_ASSOC);
 
-                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire AS commentaires, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat = "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
+                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire AS commentaires,ligne_ticket.Etat AS Etat, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat = "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire,Etat ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
                 $statmt17->bindParam(':id_ticket', $u, PDO::PARAM_INT);
                 include "view/bar/bar.php";
                 break;
