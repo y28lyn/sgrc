@@ -79,7 +79,7 @@ if ($_SESSION["role"] == "bar") {
 											<th>Nom Boissons</th>
 											<th>Commentaires</th>
 											<th>Etat</th>
-											<th>Modifier</th>	
+											<th>Modifier</th>
 										</tr>
 									</thead>
 
@@ -87,9 +87,9 @@ if ($_SESSION["role"] == "bar") {
 									$u = $ticketBar['id_ticket'];
 									$statmt17->execute();
 									$commandes = $statmt17->fetchAll();
-									foreach ($commandes as $commande) { 
-										?>
-									
+									foreach ($commandes as $commande) {
+									?>
+
 										<tbody>
 											<tr>
 												<td>
@@ -105,33 +105,43 @@ if ($_SESSION["role"] == "bar") {
 													<?php echo $commande['Etat']; ?>
 												</td>
 
-												<?php if ($commande['Etat'] == "Demandé") { ?>
+												<?php
+												if ($commande['Etat'] == "En saisie") {
+												?>
 													<td>
-														<form method="POST">
-															<input type="hidden" name="action" value="etatEnCours">
-															<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
-															<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
+														En Attente de Validation
+													</td>	
+													<?php
+												} else {
 
-															<input type="submit" value="En cours">
-														</form>
-													</td>
-													<?php } else {
-													if ($commande['Etat'] == "En cours") { ?>
+													if ($commande['Etat'] == "Demandé") { ?>
 														<td>
 															<form method="POST">
-																<input type="hidden" name="action" value="etatPret">
+																<input type="hidden" name="action" value="etatEnCours">
 																<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
 
-																<input type="submit" value="Prêt">
+																<input type="submit" value="En cours">
 															</form>
 														</td>
-													<?php } else { ?>
-														<td>
-															A servir
-														<td>
+														<?php } else {
+														if ($commande['Etat'] == "En cours") { ?>
+															<td>
+																<form method="POST">
+																	<input type="hidden" name="action" value="etatPret">
+																	<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
+																	<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
+
+																	<input type="submit" value="Prêt">
+																</form>
+															</td>
+														<?php } else { ?>
+															<td>
+																A servir
+															<td>
 													<?php }
-													} ?>
+													}
+												} ?>
 											</tr>
 										</tbody>
 									<?php
