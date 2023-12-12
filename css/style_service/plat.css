@@ -40,6 +40,15 @@ body::-webkit-scrollbar-thumb:hover  {
   padding: 25px;
   border-radius: 1rem;
 }
+
+.container_menu {
+  background-color: var(--color-white);
+  padding: 25px;
+  border-radius: 1rem;
+  width: 1000px;
+  max-width: 1000px;
+}
+
 .tabs {
   text-align: center;
 }
@@ -228,7 +237,6 @@ td button{
   color: var(--color-primary);
 }
 
-
 .tab-button{
   font-size: 16px;
   padding: 4px;
@@ -249,7 +257,6 @@ td button{
   color: var(--color-primary);
   border: 3px solid var(--color-primary);
 }
-
 
 .ticket_de_caisse{
   background-color: var(--color-ticket);

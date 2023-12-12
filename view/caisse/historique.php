@@ -128,7 +128,7 @@ if ($_SESSION["role"] == "caisse") {
 							<p style="text-transform: uppercase;"><b><?php echo $_SESSION['role'] ?></b></p>
 						</div>
 						<div class="profil-photot">
-							<img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt="">
+							<img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt="">
 						</div>
 					</div>
 				</div>

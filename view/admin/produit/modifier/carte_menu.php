@@ -21,7 +21,7 @@ if ($_SESSION["role"] == "admin") {
     <main>
         <a href="?page=menu" class="back_btn">Retour</a>
         <caption>Carte</caption>
-        <div class="container">
+        <div class="container_menu">
             <div class="tabs">
                 <?php
                 $statmt28->execute();
@@ -123,7 +123,7 @@ if ($_SESSION["role"] == "admin") {
                 $row = $statm->fetch();
                 ?>
                 <div class="profil-photot">
-                    <!-- <img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt=""> -->
+                    <!-- <img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt=""> -->
                     <!-- <img src="/SGRC/image/img/source/profil.jpg" alt="Profil" /> -->
                 </div>
             </div>

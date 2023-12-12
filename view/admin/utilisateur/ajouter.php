@@ -3,7 +3,7 @@ if (!isset($_SESSION)) {
     session_start();
 }
 if ($_SESSION["role"] == "admin") {
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="fr">
 
@@ -33,7 +33,27 @@ if ($_SESSION["role"] == "admin") {
             <input name="login" id="login" type="text" autofocus="autofocus" autocomplete="off" required> <br>
             <!--Rôle -->
             <label for="role">Rôle</label>
-            <input name="role" id="role" type="text" autocomplete="off" required> <br>
+            <select name="role" id="role" required>
+                <?php
+                // Options manuelles
+                $optionsManuelles = array(
+                    "bar",
+                    "service",
+                    "cuisine",
+                    "caisse",
+                    "admin"
+                );
+
+                // Boucle pour les options manuelles
+                foreach ($optionsManuelles as $optionManuelle) {
+                ?>
+                    <option value="<?php echo $optionManuelle; ?>">
+                        <?php echo $optionManuelle; ?>
+                    </option>
+                <?php
+                }
+                ?>
+            </select><br>
             <!-- Le mot de passe -->
             <label for="mdp">Mot de passe</label>
             <input name="mdp" id="mdp" type="password" autocomplete="off" required> <br>
@@ -54,7 +74,7 @@ if ($_SESSION["role"] == "admin") {
     </body>
 
     </html>
-    <?php
+<?php
 } else {
     echo ("vous n'avez pas le droit d'être là");
     header("Location: /SGRC/index.php");

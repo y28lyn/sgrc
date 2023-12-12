@@ -155,7 +155,7 @@ if ($_SESSION["role"] == "caisse") {
 							<p style="text-transform: uppercase;"><b><?php echo $_SESSION['role'] ?></b></p>
 						</div>
 						<div class="profil-photot">
-							<img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt="">
+							<img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt="">
 						</div>
 					</div>
 				</div>
@@ -171,14 +171,21 @@ if ($_SESSION["role"] == "caisse") {
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 		<script>
-			// Recharger la page avce intervale
-			setInterval('load_ticket()', 2000);
+			function load_tickets() {
+				//Récupérer les nouveaux tickets sans recharger la page entière en ajax
+				$.ajax({
+					url: "/SGRC/view/caisse/load_tickets.php",
+					type: "GET",
+					success: function(data) {
+						// Mettre à jour seulement la partie nécessaire
+						$(".card_ticket").html(data);
+					}
+				});
+			}	
 
-			function load_ticket() {
-				location.reload();
-				// Fonction load permet de charger le contenu un fichier a jquery
-				//$(".card_ticket").load("/SGRC/view/caisse/load_ticket.php");
-			};
+			// Appeler la fonction toutes les 2 secondes
+			setInterval(load_tickets, 2000);
+
 		</script>
 	</body>
 

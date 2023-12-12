@@ -23,7 +23,7 @@ main .Utilisateur i {
   font-size: 1.5rem;
 }
 
-main .Utilisateur button{
+main .Utilisateur button {
   background: transparent;
 }
 /* Titre tableau */
@@ -35,10 +35,15 @@ main .Utilisateur table caption {
   margin: 1.5rem 0 1rem 0;
 }
 
+main .Utilisateur .test{
+  box-shadow: none !important;
+
+}
+
 /* main .Utilisateur h2 {
     margin-bottom: 0.8rem;
   } */
-main .Utilisateur table {
+.main-user .Utilisateur table{
   background: var(--color-white);
   width: 100%;
   border-radius: var(--card-border-radius);
