@@ -102,8 +102,8 @@ if ($_SESSION["role"] == "caisse") {
 								</caption>
 								<thead>
 									<tr>
-										<th>Menu</th>
 										<th>Quantit&eacute;</th>
+										<th>Description</th>
 										<!-- <th>Nom du Produit</th> -->
 										<th>Prix</th>
 									</tr>
@@ -114,7 +114,16 @@ if ($_SESSION["role"] == "caisse") {
 								$idticket_caisse = $ticketBar['id_ticket'];
 								$statmt17->execute();
 								$commandes = $statmt17->fetchAll();
-							
+								?>
+								<tbody>
+								<tr>	
+									<td><?php echo $ticketBar['nb_couvert']; ?> </td>
+									<td><?php echo 'Menu'; ?> </td>
+									<td><?php echo $prixMenu['PU'] * $ticketBar['nb_couvert']; ?>€</td>
+								</tr>
+								<tr></tr>
+							</tbody>
+							<?php
 									
 								// Recuperation du prix total pour ce ticket
 								$statmt20->execute();
@@ -133,12 +142,13 @@ if ($_SESSION["role"] == "caisse") {
 
 								<?php
 								}
+								// var_dump($prixMenu)
 								?>
-
+							
 							</table>
 
 							<!-- Affichage du prix total pour ce ticket -->
-								 <tr>Prix Total : <?php echo $prixMenu['PU'] * $ticketBar['nb_couvert'] + $prixTT['TT'] ?></tr>
+								 <tr>Prix Total : <?php echo $prixMenu['PU'] * $ticketBar['nb_couvert'] + $prixTT['TT']; ?>€</tr>
 
 							<!-- Formulaire pour payer le ticket -->
 							<tr>
@@ -197,8 +207,9 @@ if ($_SESSION["role"] == "caisse") {
 	</body>
 
 	</html>
-<?php
 
+	
+<?php
 } else {
 	echo ("vous n'avez pas le droit d'être là");
 	header("Location:../../../index.php");
