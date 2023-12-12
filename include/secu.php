@@ -766,7 +766,7 @@ if (isset($_SESSION["role"])) {
                             case "carte_menu": {
                                 if (isset($_SESSION['id_m'])) {
                                     $id_m = $_SESSION['id_m'];
-                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat ORDER BY ordre_affichage_cat asc');
                                     $requete_carte = $pdo->prepare("SELECT P.id_plat, P.nom_plat, P.description, P.type_plat, S.nom_sous_cat, P.PU_carte from menu_contient_plat MP, plat P, sous_categorie S, menu M WHERE MP.id_menu=M.id_menu AND MP.id_plat=P.id_plat AND P.id_sous_cat = S.id_sous_cat AND P.vu=0 and MP.id_menu = :id_m ORDER BY S.ordre_aff_sous_cat asc;");
                                     $requete_carte->bindParam(':id_m', $id_m, PDO::PARAM_INT);
                                     $requete_carte->execute();
@@ -777,7 +777,7 @@ if (isset($_SESSION["role"])) {
                                     //$statmt29->bindParam(':idsouscat', $sous_cat, PDO::PARAM_INT);
                                     //$statmt29->execute();
                                     //$cat_plats = $statmt29->fetchAll(PDO::FETCH_ASSOC);
-                                    $statmt = $pdo->prepare('SELECT sc.nom_sous_cat, sc.id_sous_cat, sc.id_cat FROM sous_categorie sc INNER JOIN categorie_plat c ON sc.id_cat = c.id_cat');
+                                    $statmt = $pdo->prepare('SELECT sc.nom_sous_cat, sc.id_sous_cat, sc.id_cat FROM sous_categorie sc INNER JOIN categorie_plat c ON sc.id_cat = c.id_cat ORDER BY ordre_aff_sous_cat ASC');
                                     include "view/admin/produit/modifier/carte_menu.php";
                                 } else {
                                     include "view/admin/produit/menu.php";

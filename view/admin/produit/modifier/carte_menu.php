@@ -21,7 +21,7 @@ if ($_SESSION["role"] == "admin") {
     <main>
         <a href="?page=menu" class="back_btn">Retour</a>
         <caption>Carte</caption>
-        <div class="container">
+        <div class="container_menu">
             <div class="tabs">
                 <?php
                 $statmt28->execute();
