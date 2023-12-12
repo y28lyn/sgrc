@@ -6,6 +6,7 @@ if (!isset($_SESSION)) {
     session_start();
 }
 if ($_SESSION["role"] == "admin") {
+            
 ?>
     <!DOCTYPE html>
     <html lang="fr">
@@ -50,16 +51,17 @@ if ($_SESSION["role"] == "admin") {
             <!-- Le bouton d'envoi -->
             <input type="submit" name="Validez" value="Ajouter"> <br>
 
-
             <p style="color: red;" id="erreur"></p>
         </form>
+
+        
+
         <!-- Script DarkMode -->
         <script src="/SGRC/js/source/dark_mode.js"></script>
         <!-- SCRIPT FONT AWESOME -->
         <script src="https://kit.fontawesome.com/438cd94e6c.js" crossorigin="anonymous"></script>
         <!-- Script ValidationJS -->
         <script src="/SGRC/js/admin/produit/ajouter_modifier/verification-table.js"></script>
-
     </body>
 
     </html>

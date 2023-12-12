@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -9,7 +12,7 @@ if ($_SESSION["role"] == "admin") {
     $re = $pdo->query($Requete_edit_table);
     $table = $re->fetchALL(PDO::FETCH_ASSOC);
 
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="fr">
 
@@ -33,23 +36,40 @@ if ($_SESSION["role"] == "admin") {
             <input type="hidden" name="action" value="update table">
             <h2>Modifier la table </h2>
             <input name="id_table" id="id_table" type="hidden" value=<?php echo htmlspecialchars(($table[0]['id_table'])) ?>>
+
             <!-- Le numero de la table -->
             <label for="numero_table">Numero de la table</label>
-            <input name="numero_table" id="numero_table" type="number" min="1" 
-                value="<?php echo htmlspecialchars(($table[0]['numero_table'])) ?>"> <br>
+            <input name="numero_table" id="numero_table" type="number" min="1" value="<?php echo htmlspecialchars(($table[0]['numero_table'])) ?>"> <br>
+
             <!-- Le type de table -->
             <label for="type_table">Type de table</label>
-            <select name="type_table" id="type_table" value="<?php echo htmlspecialchars(($table[0]['type_table'])) ?>">
-                <option value="CAR">CAR</option>
-                <option value="RON">RON</option>
-            </select> <br>
+            <select name="type_table" id="type_table">
+                <?php
+                // Options manuelles
+                $optionsManuelles = array("Carré", "Ronde", "Rectangulaire");
+
+                // Boucle pour les options manuelles
+                foreach ($optionsManuelles as $optionManuelle) {
+                ?>
+                    <option value="<?php echo $optionManuelle; ?>">
+                        <?php echo $optionManuelle; ?>
+                    </option>
+                <?php
+                }
+
+
+                ?>
+            </select><br>
+
+
             <!-- visible ou non-->
             <label for="vu">visible/invisible</label>
-            <select name="vu" id="vu" value="<?php echo htmlspecialchars(($table[0]['vu'])) ?>">
-                <option value="0">visible</option>
-                <option value="1">invisible</option>
+
+            <select name="vu" id="vu">
+                <option value="Visible" <?php echo ($table[0]['vu'] == '0' ? 'selected' : ''); ?>>Visible</option>
+                <option value="Invisible" <?php echo ($table[0]['vu'] == '1' ? 'selected' : ''); ?>>Invisible</option>
             </select>
-            <br>
+
             <!-- Le bouton d'envoi -->
             <input type="submit" name="Validez" value="Modifier">
 
@@ -65,7 +85,8 @@ if ($_SESSION["role"] == "admin") {
     </body>
 
     </html>
-    <?php
+<?php
+
 } else {
     echo ("vous n'avez pas le droit d'être là");
     header("Location: /SGRC/index.php");

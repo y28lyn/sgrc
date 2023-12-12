@@ -4,7 +4,7 @@ require_once('connexion.php');
 if (isset($_SESSION["role"])) {
     switch ($_SESSION["role"]) {
 
-        //liste des re requêtes de l'interface admin
+            //liste des re requêtes de l'interface admin
         case "admin": {
                 //login ok et admin
                 if (isset($_POST) && isset($_POST['action'])) {
@@ -17,32 +17,66 @@ if (isset($_SESSION["role"])) {
                                 $num_table = htmlspecialchars($_POST['numero_table']);
                                 $type_table = htmlspecialchars($_POST['type_table']);
                                 $vu_table = htmlspecialchars($_POST['vu']);
-                                $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
-                                header('location: /SGRC/index.php?page=table');
+
+                                $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
+                                $statmt->execute();
+                                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
+                                
+                                $compteur = 0;
+                                
+                                foreach ($tables as $table){
+                                    $tableNUM = $table['numero_table'];
+                                    if ( $tableNUM === $num_table) {
+                                        $compteur += 1;
+                                    }
+                                }
+
+                                if($compteur === 0){
+                                    $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
+                                    header('location: /SGRC/index.php?page=table');
+                                }
+                                else {
+                                    echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
+                                }
+
+                                $compteur = 0;
+                                
+                                
                                 break;
                             }
                         case "update table": {
                                 $id_t = htmlspecialchars($_POST['id_table']);
                                 $num_table = htmlspecialchars($_POST['numero_table']);
                                 $type_table = htmlspecialchars($_POST['type_table']);
-                                $vu_table = htmlspecialchars($_POST['vu']);
+                                $vu_tb = htmlspecialchars($_POST['vu']);
+                                $vu_tb = ($vu_tb == 'Visible') ? '0' : '1';
                                 // Variable de id_menu en GET
-                                $reqUP = "UPDATE sgr_table SET numero_table='$num_table',type_table='$type_table',vu='$vu_table' WHERE id_table ='$id_t'";
+                                $reqUP = "UPDATE sgr_table SET numero_table='$num_table',type_table='$type_table',vu='$vu_tb' WHERE id_table ='$id_t'";
                                 $resulat = mysqli_query($link, $reqUP);
                                 header('location: /SGRC/index.php?page=table');
                                 break;
                             }
 
-                        case "suppr table": {
-                            if (isset($_POST['id_table'])) {
-                                $id_table = $_POST['id_table'];
-                                $statmt = $pdo->prepare("DELETE from sgr_table where `id_table`=" . $id_table . ';');
-                                $statmt->execute();
-                                header('location: /SGRC/index.php?page=table');
+                        case "vis table": {
+                                if (isset($_POST['id_table'])) {
+                                    $id_table = $_POST['id_table'];
+                                    $statmt = $pdo->prepare('UPDATE `sgr_table` SET `vu` = ' . $_POST['visibilite'] . ' WHERE `id_table`=' . $id_table . ';');
+                                    $statmt->execute();
+                                    header('location: /SGRC/index.php?page=table');
+                                }
+                                break;
                             }
-                            break;
-                        }
-                        //ajout/modifictaion/suppression des boissons et plats dans la base de données
+
+                        case "suppr table": {
+                                if (isset($_POST['id_table'])) {
+                                    $id_table = $_POST['id_table'];
+                                    $statmt = $pdo->prepare("DELETE from sgr_table where `id_table`=" . $id_table . ';');
+                                    $statmt->execute();
+                                    header('location: /SGRC/index.php?page=table');
+                                }
+                                break;
+                            }
+                            //ajout/modifictaion/suppression des boissons et plats dans la base de données
                         case "ajout boisson": {
                                 $id_pl = htmlspecialchars($_POST['id_plat']);
                                 $nom_pl = htmlspecialchars($_POST['nom_plat']);
@@ -63,6 +97,7 @@ if (isset($_SESSION["role"])) {
                                 $type_pl = htmlspecialchars($_POST['type_plat']);
                                 $prix_carte = htmlspecialchars($_POST['PU_carte']);
                                 $vu_pl = htmlspecialchars($_POST['vu']);
+                                $vu_pl = ($vu_pl == 'Visible') ? '0' : '1';
 
                                 $reqUP = "UPDATE plat SET nom_plat='$nom_pl',description='$desc_pl',id_sous_cat='$type_pl' ,PU_carte='$prix_carte' ,vu='$vu_pl' WHERE id_plat ='$id_pl'";
                                 $resulat = mysqli_query($link, $reqUP);
@@ -70,14 +105,25 @@ if (isset($_SESSION["role"])) {
                                 break;
                             }
 
-                        case "suppr boisson": {
-                            if (isset($_POST['id_b'])) {
-                                $id_boisson = $_POST['id_b'];
-                                $statmt = $pdo->prepare('DELETE from plat where `id_plat`=' . $id_boisson . ';');
-                                $statmt->execute();
-                                header('location: /SGRC/index.php?page=boisson');
+                        case "vis boisson": {
+                                if (isset($_POST['id_b'])) {
+                                    $id_plat = $_POST['id_b'];
+                                    $statmt = $pdo->prepare('UPDATE `plat` SET `vu` = ' . $_POST['visibilite'] . ' WHERE `id_plat`=' . $id_plat . ';');
+                                    $statmt->execute();
+                                    header('location: /SGRC/index.php?page=boisson');
+                                }
+                                break;
                             }
-                            break;}
+
+                        case "suppr boisson": {
+                                if (isset($_POST['id_b'])) {
+                                    $id_boisson = $_POST['id_b'];
+                                    $statmt = $pdo->prepare('DELETE from plat where `id_plat`=' . $id_boisson . ';');
+                                    $statmt->execute();
+                                    header('location: /SGRC/index.php?page=boisson');
+                                }
+                                break;
+                            }
 
                         case "ajout plat": {
                                 $np = $_POST["nom_plat"];
@@ -101,13 +147,25 @@ if (isset($_SESSION["role"])) {
                                 $sous_type_pl = htmlspecialchars($_POST['sous_type_plat']);
                                 $prix_carte = htmlspecialchars($_POST['PU_carte']);
                                 $vu_pl = htmlspecialchars($_POST['vu']);
+                                $vu_pl = ($vu_pl == 'Visible') ? '0' : '1';
                                 // Variable de id_menu en GET
-
-                                $reqUP = "UPDATE plat SET nom_plat='$nom_pl',description='$desc_pl',id_sous_cat='$sous_type_pl' ,PU_carte='$prix_carte' ,vu='$vu_pl' WHERE id_plat ='$id_pl'";
+                                $reqUP = "UPDATE plat SET nom_plat='$nom_pl', description='$desc_pl', id_sous_cat='$sous_type_pl', PU_carte='$prix_carte', vu='$vu_pl' WHERE id_plat ='$id_pl'";
                                 $resulat = mysqli_query($link, $reqUP);
                                 header('location: /SGRC/index.php?page=plat');
                                 break;
                             }
+
+                        case "vis plat": {
+                                if (isset($_POST['id_b'])) {
+                                    $id_plat = $_POST['id_b'];
+                                    $statmt = $pdo->prepare('UPDATE `plat` SET `vu` = ' . $_POST['visibilite'] . ' WHERE `id_plat`=' . $id_plat . ';');
+                                    $statmt->execute();
+                                    header('location: /SGRC/index.php?page=plat');
+                                }
+                                break;
+                            }
+
+
 
                         case "suppr plat": {
                                 if (isset($_POST['id_pl'])) {
@@ -116,8 +174,8 @@ if (isset($_SESSION["role"])) {
                                     $statmt->execute();
                                     header('location: /SGRC/index.php?page=plat');
                                 }
-                            break;
-                        }
+                                break;
+                            }
 
                         case "ajout menu": {
                                 $nm = $_POST["nom_menu"];
@@ -169,20 +227,20 @@ if (isset($_SESSION["role"])) {
                                 header('location: /SGRC/index.php?page=menu');
                                 break;
                             }
-                        
+
                         case "suppr menu": {
-                            if (isset($_POST['id_m'])) {
-                                $id_menu = $_POST['id_m'];
-                                $statmt = $pdo->prepare("DELETE FROM menu_contient_plat WHERE id_menu = :id_menu");
-                                $statmt->bindParam(":id_menu",$id_menu,PDO::PARAM_INT);
-                                $statmt->execute();
-                                $statmt = $pdo->prepare("DELETE FROM menu WHERE `id_menu`= :id_menu ;");
-                                $statmt->bindParam(':id_menu',$id_menu,PDO::PARAM_INT);
-                                $statmt->execute();
-                                header('location: /SGRC/index.php?page=menu');
+                                if (isset($_POST['id_m'])) {
+                                    $id_menu = $_POST['id_m'];
+                                    $statmt = $pdo->prepare("DELETE FROM menu_contient_plat WHERE id_menu = :id_menu");
+                                    $statmt->bindParam(":id_menu", $id_menu, PDO::PARAM_INT);
+                                    $statmt->execute();
+                                    $statmt = $pdo->prepare("DELETE FROM menu WHERE `id_menu`= :id_menu ;");
+                                    $statmt->bindParam(':id_menu', $id_menu, PDO::PARAM_INT);
+                                    $statmt->execute();
+                                    header('location: /SGRC/index.php?page=menu');
+                                }
+                                break;
                             }
-                            break;
-                        }
 
                         case "carte menu": {
                                 $id_m = $_POST['id_m'];
@@ -209,51 +267,51 @@ if (isset($_SESSION["role"])) {
                                 break;
                             }
 
-                        
-
-                        case "suppr_utilisateur": {
-                            $id_u = $_POST['id_u'];
-                            $statmt = $pdo->prepare('DELETE FROM `user` WHERE id_user =' . $id_u . ';');
-                            $statmt->execute();
-                            header('location: /SGRC/index.php?page=users');
-                            break;
-                        }
-
-                        case "modif_utilisateur": {
-                            $id_u = $_POST['id_user'];
-                            $nouveau_login =$_POST['login'];
-                            $nouveau_role = $_POST['role'];
-                            $nouveau_mot_de_passe = password_hash($_POST['mdp'], PASSWORD_DEFAULT);
-
-                            $statmt = $pdo->prepare("UPDATE user SET login = ?, role = ?, mdp = ? WHERE id_user = ?");
-                            $statmt->execute([$nouveau_login, $nouveau_role, $nouveau_mot_de_passe, $id_u]);
-
-                            header('Location: /SGRC/index.php?page=users');
-                            break;
-                        }
-
 
 
                         case "suppr_utilisateur": {
-                            $id_u = $_POST['id_u'];
-                            $statmt = $pdo->prepare('DELETE FROM `user` WHERE id_user =' . $id_u . ';');
-                            $statmt->execute();
-                            header('location: /SGRC/index.php?page=users');
-                            break;
-                        }
+                                $id_u = $_POST['id_u'];
+                                $statmt = $pdo->prepare('DELETE FROM `user` WHERE id_user =' . $id_u . ';');
+                                $statmt->execute();
+                                header('location: /SGRC/index.php?page=users');
+                                break;
+                            }
 
                         case "modif_utilisateur": {
-                            $id_u = $_POST['id_u'];
-                            $nouveau_login = $_POST['nouveau_login'];
-                            $nouveau_role = $_POST['nouveau_role'];
-                            $nouveau_mot_de_passe = $_POST['nouveau_mot_de_passe'];
+                                $id_u = $_POST['id_user'];
+                                $nouveau_login = $_POST['login'];
+                                $nouveau_role = $_POST['role'];
+                                $nouveau_mot_de_passe = password_hash($_POST['mdp'], PASSWORD_DEFAULT);
 
-                            $statmt = $pdo->prepare("UPDATE user SET login = ?, role = ?, mdp = ? WHERE id_user = ?");
-                            $statmt->execute([$nouveau_login, $nouveau_role, $nouveau_mot_de_passe, $id_u]);
+                                $statmt = $pdo->prepare("UPDATE user SET login = ?, role = ?, mdp = ? WHERE id_user = ?");
+                                $statmt->execute([$nouveau_login, $nouveau_role, $nouveau_mot_de_passe, $id_u]);
 
-                            header('Location: /SGRC/index.php?page=modif_utilisateur');
-                            break;
-                        }
+                                header('Location: /SGRC/index.php?page=users');
+                                break;
+                            }
+
+
+
+                        case "suppr_utilisateur": {
+                                $id_u = $_POST['id_u'];
+                                $statmt = $pdo->prepare('DELETE FROM `user` WHERE id_user =' . $id_u . ';');
+                                $statmt->execute();
+                                header('location: /SGRC/index.php?page=users');
+                                break;
+                            }
+
+                        case "modif_utilisateur": {
+                                $id_u = $_POST['id_u'];
+                                $nouveau_login = $_POST['nouveau_login'];
+                                $nouveau_role = $_POST['nouveau_role'];
+                                $nouveau_mot_de_passe = $_POST['nouveau_mot_de_passe'];
+
+                                $statmt = $pdo->prepare("UPDATE user SET login = ?, role = ?, mdp = ? WHERE id_user = ?");
+                                $statmt->execute([$nouveau_login, $nouveau_role, $nouveau_mot_de_passe, $id_u]);
+
+                                header('Location: /SGRC/index.php?page=modif_utilisateur');
+                                break;
+                            }
 
 
 
@@ -394,29 +452,30 @@ if (isset($_SESSION["role"])) {
                             }
 
                         case "ajout sous categorie": {
-                            $nom_sous_cat = $_POST['nom_sous_cat'];
-                            $idcat = $_SESSION['id_t'];
-                            $couleur = $_POST['couleur'];
-                            
-                            // Préparation de la première requête pour obtenir la valeur MAX
-                            $sql = "SELECT MAX(ordre_aff_sous_cat) as oac FROM sous_categorie WHERE id_cat = :idcat";
-                            $stmt = $pdo->prepare($sql);
-                            $stmt->bindParam(':idcat', $idcat, PDO::PARAM_INT);
-                            $stmt->execute();
-                            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                            
-                            $oac = $result['oac'] + 1;
-                            
-                            // Préparation de la deuxième requête pour l'INSERT
-                            $sql = "INSERT INTO sous_categorie (id_sous_cat, id_cat, nom_sous_cat, ordre_aff_sous_cat, couleur) VALUES (null, :idcat, :nom_sous_cat, :oac, :couleur)";
-                            $stmt = $pdo->prepare($sql);
-                            $stmt->bindParam(':idcat', $idcat, PDO::PARAM_INT);
-                            $stmt->bindParam(':nom_sous_cat', $nom_sous_cat, PDO::PARAM_STR);
-                            $stmt->bindParam(':oac', $oac, PDO::PARAM_INT);
-                            $stmt->bindParam(':couleur', $couleur, PDO::PARAM_STR);
-                            
-                            $stmt->execute();
-                            header('location: /SGRC/index.php?page=sous_categorie');
+                                $nom_sous_cat = $_POST['nom_sous_cat'];
+                                $idcat = $_SESSION['id_t'];
+                                $couleur = htmlspecialchars($_POST['couleur']);
+
+                                // Préparation de la première requête pour obtenir la valeur MAX
+                                $sql = "SELECT MAX(ordre_aff_sous_cat) as oac FROM sous_categorie WHERE id_cat = :idcat";
+                                $stmt = $pdo->prepare($sql);
+                                $stmt->bindParam(':idcat', $idcat, PDO::PARAM_INT);
+                                $stmt->execute();
+                                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                $oac = $result['oac'] + 1;
+
+                                // Préparation de la deuxième requête pour l'INSERT
+                                $sql = "INSERT INTO sous_categorie (id_sous_cat, id_cat, nom_sous_cat, ordre_aff_sous_cat, couleur) VALUES (null, :idcat, :nom_sous_cat, :oac, :couleur)";
+                                $stmt = $pdo->prepare($sql);
+                                $stmt->bindParam(':idcat', $idcat, PDO::PARAM_INT);
+                                $stmt->bindParam(':nom_sous_cat', $nom_sous_cat, PDO::PARAM_STR);
+                                $stmt->bindParam(':oac', $oac, PDO::PARAM_INT);
+                                $stmt->bindParam(':couleur', $couleur, PDO::PARAM_STR);
+
+                                $stmt->execute();
+                                header('location: /SGRC/index.php?page=sous_categorie');
+                                break;
                             }
 
 
@@ -434,10 +493,9 @@ if (isset($_SESSION["role"])) {
                                 $id_sous_cat = htmlspecialchars($_POST['id_sous_cat']);
                                 $nom_sous_cat = htmlspecialchars($_POST['nom_sous_cat']);
                                 $couleur = htmlspecialchars($_POST['couleur']);
-
                                 $reqUP = $pdo->prepare("UPDATE sous_categorie SET nom_sous_cat='$nom_sous_cat', couleur='$couleur' WHERE id_cat ='$id_cat' AND id_sous_cat = '$id_sous_cat'");
                                 $reqUP->execute();
-                                
+
                                 header('location: /SGRC/index.php?page=sous_categorie');
                                 break;
                             }
@@ -537,15 +595,14 @@ if (isset($_SESSION["role"])) {
                 $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
                 $statmt->execute();
                 $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
-                ;
 
                 //recup de la liste des boissons
-                $statmt3 = $pdo->prepare('SELECT * FROM plat INNER JOIN sous_categorie ON plat.id_sous_cat = sous_categorie.id_sous_cat WHERE id_cat != 1');
+                $statmt3 = $pdo->prepare('SELECT * FROM plat INNER JOIN sous_categorie ON plat.id_sous_cat = sous_categorie.id_sous_cat WHERE id_cat != 1 ORDER BY vu ASC');
                 $statmt3->execute();
                 $boissons = $statmt3->fetchAll(PDO::FETCH_ASSOC);
 
                 //recup de la liste des plats
-                $statmt5 = $pdo->prepare('SELECT * FROM plat INNER JOIN sous_categorie ON plat.id_sous_cat = sous_categorie.id_sous_cat WHERE id_cat = 1');
+                $statmt5 = $pdo->prepare('SELECT * FROM plat INNER JOIN sous_categorie ON plat.id_sous_cat = sous_categorie.id_sous_cat WHERE id_cat = 1 ORDER BY vu ASC');
                 $statmt5->execute();
                 $plats = $statmt5->fetchAll(PDO::FETCH_ASSOC);
 
@@ -679,7 +736,6 @@ if (isset($_SESSION["role"])) {
                                     $statmt35->execute();
                                     $sous_cats = $statmt35->fetchAll(PDO::FETCH_ASSOC);
                                     include "view/admin/categorie/sous_categorie.php";
-
                                 } else {
                                     $id_t = $_POST['id_t'];
                                     $_SESSION['id_t'] = $id_t;
@@ -707,9 +763,10 @@ if (isset($_SESSION["role"])) {
                                 break;
                             }
 
-                        case "carte_menu": {
+                            case "carte_menu": {
                                 if (isset($_SESSION['id_m'])) {
                                     $id_m = $_SESSION['id_m'];
+                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat ORDER BY ordre_affichage_cat asc');
                                     $requete_carte = $pdo->prepare("SELECT P.id_plat, P.nom_plat, P.description, P.type_plat, S.nom_sous_cat, P.PU_carte from menu_contient_plat MP, plat P, sous_categorie S, menu M WHERE MP.id_menu=M.id_menu AND MP.id_plat=P.id_plat AND P.id_sous_cat = S.id_sous_cat AND P.vu=0 and MP.id_menu = :id_m ORDER BY S.ordre_aff_sous_cat asc;");
                                     $requete_carte->bindParam(':id_m', $id_m, PDO::PARAM_INT);
                                     $requete_carte->execute();
@@ -720,7 +777,6 @@ if (isset($_SESSION["role"])) {
 
 
                                     include "view/admin/produit/modifier/carte_menu.php";
-
                                 } else {
                                     include "view/admin/produit/menu.php";
                                 }
@@ -729,9 +785,9 @@ if (isset($_SESSION["role"])) {
                             }
 
                         case "modif_utilisateur": {
-                            include "view/admin/utilisateur/modifier.php";
-                            break;
-                        }
+                                include "view/admin/utilisateur/modifier.php";
+                                break;
+                            }
 
 
                         case "ajout_carte": {
@@ -928,7 +984,6 @@ if (isset($_SESSION["role"])) {
                                     // Si n'existe pas cree un ticket.
                                     $reqete = "INSERT INTO `ticket` (`id_ticket`, `id_table`,statut) VALUES (NULL,$id,'CRE');";
                                     $pdo->exec($reqete);
-
                                 }
 
                                 // ******************NOMBRE DE COUVERT SUR LA TABLE DU RESTAU******************\\
@@ -1021,139 +1076,91 @@ if (isset($_SESSION["role"])) {
                             }
 
 
-                            case "cree_ligne_ticket": {
+                        case "cree_ligne_ticket": {
 
                                 $idTicket = $_POST['id_ticket'];
                                 $_SESSION['id_ticket'] = $idTicket;
                                 $id_p = $_POST['id_plat'];
                                 $n = $_POST['nb_plat'];
-    
-                                for($i = 1; $i <= $n; ++$i)
-                                {
-                                    $stmt = $pdo->prepare("INSERT INTO ligne_ticket (id_ticket, id_plat, Statuts) VALUES (:idticket, :idplat,'En cours')");
+
+
+                                for ($i = 1; $i <= $n; ++$i) {
+                                    $stmt = $pdo->prepare("INSERT INTO ligne_ticket (id_ticket, id_plat) VALUES (:idticket, :idplat)");
                                     $stmt->bindValue(':idticket', $idTicket, PDO::PARAM_STR);
                                     $stmt->bindValue(':idplat', $id_p, PDO::PARAM_STR);
-                                    $stmt->execute();                          
-                                }     
-    
-                                //Récup des catégorie de plat
-                                $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
-                                
-                                //Récup des sous catégories des catégories
-                                $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat ');
-                                $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
-                            
-                                //Récup des plats des sous catégories
-                                $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
-                                $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
-                            
-                                //Récup des lignes de ticket du ticket
-                                $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket AND p.vu=0 ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
-                                $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
-                                include "view/service/prise_de_commande/plat.php";
-                                break;                       
+                                    $stmt->execute();
+                                }
+
+                                header("Location:index.php?page=plat");
+                                break;
                             }
 
                         case "diminue_ligne_ticket": {
 
-                        if(isset($_POST['id_ligne_ticket']))
-                        {
-                            //Supprime un ligne du ticket / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
-                            $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ligne_ticket=:id_ligne_ticket)");
-                            $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
-                            $requeteDiminueLigneTicketCom->execute();
-                        }
-                        else{
-                            $id_plat = $_POST['id_plat'];
-                            $id_ticket = $_POST['id_ticket'];
-                            //Supprime un ligne du ticket
-                            $requeteDiminueLigneTicket = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ticket = :id_ticket AND id_plat = :id_plat and commentaire is NULL LIMIT 1)");
-                            $requeteDiminueLigneTicket->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
-                            $requeteDiminueLigneTicket->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
-                            $requeteDiminueLigneTicket->execute();
-                        }
-                        
-                            /*Refresh Ticket*/
-                            //Récup des catégorie de plat
-                            $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
-                            
-                            //Récup des sous catégories des catégories
-                            $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat ');
-                            $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
-                        
-                            //Récup des plats des sous catégories
-                            $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
-                            $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
-                        
-                            //Récup des lignes de ticket du ticket
-                            $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket AND p.vu=0 ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
-                            $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
-                            include "view/service/prise_de_commande/plat.php";
-                            break;
-                        }        
-                        
+                                if (isset($_POST['id_ligne_ticket'])) {
+                                    //Supprime un ligne du ticket / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
+                                    $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = :id_ligne_ticket");
+                                    $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
+                                    $requeteDiminueLigneTicketCom->execute();
+                                } else {
+                                    $id_plat = $_POST['id_plat'];
+                                    $id_ticket = $_POST['id_ticket'];
+                                    //Supprime un ligne du ticket
+                                    $requeteDiminueLigneTicket = $pdo->prepare("DELETE ligne_ticket.* FROM ligne_ticket JOIN (SELECT id_ligne_ticket FROM ligne_ticket WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND commentaire IS NULL LIMIT 1 ) AS subquery ON ligne_ticket.id_ligne_ticket = subquery.id_ligne_ticket;");
+                                    //$requeteDiminueLigneTicket = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ticket = :id_ticket AND id_plat = :id_plat and commentaire is NULL LIMIT 1)");
+                                    $requeteDiminueLigneTicket->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                    $requeteDiminueLigneTicket->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                    $requeteDiminueLigneTicket->execute();
+                                }
+
+                                /*Refresh Ticket*/
+                                header("Location:index.php?page=plat");
+                                break;
+                            }
+
                         case "modifier_commentaire": {
 
-                            $commentaire = $_POST['commentaire'];
-                            if(empty($commentaire)){
-                                $commentaire = null; 
+                                $commentaire = $_POST['commentaire'];
+                                if (empty($commentaire)) {
+                                    $commentaire = null;
+                                }
+                                if (isset($_POST['id_ligne_ticket'])) {
+                                    $id_ligne_ticket = $_POST['id_ligne_ticket'];
+
+                                    $requeteUpdateCommentaire = $pdo->prepare("UPDATE `ligne_ticket` SET commentaire=:commentaire WHERE id_ligne_ticket = :idLT ");
+                                    $requeteUpdateCommentaire->bindParam(':idLT', $id_ligne_ticket, PDO::PARAM_INT);
+                                    $requeteUpdateCommentaire->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                    $requeteUpdateCommentaire->execute();
+                                } else {
+                                    $id_plat = $_POST['id_plat'];
+                                    $id_ticket = $_POST['id_ticket'];
+
+                                    //Requete pour la ligne de ticket contenant le plus grand nombre de du plat en question
+                                    $requeteLigneDispo = $pdo->prepare("SELECT * FROM ligne_ticket WHERE id_plat = :id_plat and id_ticket = :id_ticket and commentaire IS NULL LIMIT 1");
+                                    $requeteLigneDispo->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                    $requeteLigneDispo->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                    $requeteLigneDispo->execute();
+                                    $ligneDispo = $requeteLigneDispo->fetch();
+
+                                    $requeteUpdateCommentaire = $pdo->prepare("UPDATE `ligne_ticket` SET commentaire=:commentaire WHERE id_ligne_ticket = :idLT ");
+                                    $requeteUpdateCommentaire->bindParam(':idLT', $ligneDispo['id_ligne_ticket'], PDO::PARAM_INT);
+                                    $requeteUpdateCommentaire->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                    $requeteUpdateCommentaire->execute();
+                                }
+
+                                /*Refresh Ticket*/
+                                header("Location:index.php?page=plat");
+                                break;
                             }
-                            if(isset($_POST['id_ligne_ticket']))
-                            {
-                                $id_ligne_ticket = $_POST['id_ligne_ticket']; 
-
-                                $requeteUpdateCommentaire = $pdo->prepare("UPDATE `ligne_ticket` SET commentaire=:commentaire WHERE id_ligne_ticket = :idLT ");
-                                $requeteUpdateCommentaire->bindParam(':idLT',$id_ligne_ticket, PDO::PARAM_INT);
-                                $requeteUpdateCommentaire->bindParam(':commentaire',$commentaire, PDO::PARAM_STR);
-                                $requeteUpdateCommentaire->execute();
-                            }
-                            else{
-                                $id_plat = $_POST['id_plat'];
-                                $id_ticket = $_POST['id_ticket']; 
-
-                                //Requete pour la ligne de ticket contenant le plus grand nombre de du plat en question
-                                $requeteLigneDispo = $pdo->prepare("SELECT * FROM ligne_ticket WHERE id_plat = :id_plat and id_ticket = :id_ticket and commentaire IS NULL LIMIT 1");
-                                $requeteLigneDispo->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
-                                $requeteLigneDispo->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
-                                $requeteLigneDispo->execute();
-                                $ligneDispo = $requeteLigneDispo->fetch();
-
-                                $requeteUpdateCommentaire = $pdo->prepare("UPDATE `ligne_ticket` SET commentaire=:commentaire WHERE id_ligne_ticket = :idLT ");
-                                $requeteUpdateCommentaire->bindParam(':idLT',$ligneDispo['id_ligne_ticket'], PDO::PARAM_INT);
-                                $requeteUpdateCommentaire->bindParam(':commentaire',$commentaire, PDO::PARAM_STR);
-                                $requeteUpdateCommentaire->execute();
-
-                            }
-
-                            //Récup des catégorie de palt
-                            $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
-                            
-                            //Récup des sous catégories des catégories
-                            $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat');
-                            $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
-
-                            //Récup des plats des sous catégories
-                            $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
-                            $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
-
-                            //Récup des lignes de ticket du ticket
-                            $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
-                            $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
-                            include "view/service/prise_de_commande/plat.php";
-                            break;
-                        }
 
 
-                        case "supprimer_ligne_ticket": 
-                            {
-                                if(isset($_POST['id_ligne_ticket']))
-                                {
+                        case "supprimer_ligne_ticket": {
+                                if (isset($_POST['id_ligne_ticket'])) {
                                     //Supprime toutes les lignes du plat avec le commentaire / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
                                     $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ligne_ticket=:id_ligne_ticket)");
                                     $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
                                     $requeteDiminueLigneTicketCom->execute();
-                                }
-                                else{
+                                } else {
                                     $id_plat = $_POST['id_plat'];
                                     $id_ticket = $_POST['id_ticket'];
                                     //Supprime toutes les lignes du plat
@@ -1184,7 +1191,33 @@ if (isset($_SESSION["role"])) {
                             }
 
                         default: {
+                            }
+                    }
+                }
 
+                if (isset($_GET["page"])) {
+                    switch ($_GET["page"]) {
+                        case "plat": {
+                                include "view/service/prise_de_commande/plat.php";
+                                break;
+                            }
+                        case "nbcouv": {
+                                include "view/service/prise_de_commande/nbCouvert.php";
+                                break;
+                            }
+                        case "nbcouv_modif": {
+                                include "view/service/prise_de_commande/nbCouvert_Modif.php";
+                                break;
+                            }
+
+                        default: {
+                                //par defaut on fait choisir la table
+                                //recup de la liste des tables
+                                $statmt = $pdo->prepare('SELECT * FROM sgr_table where vu=0 order by `numero_table`');
+                                $statmt->execute();
+                                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
+                                include "view/service/prise_de_commande/prise_de_commande.php";
+                                break;
                             }
                     }
                 } else {
@@ -1272,7 +1305,7 @@ if (isset($_SESSION["role"])) {
             }
     }
 } else {
-    
+
     if (isset($_POST["login"]) && isset($_POST["mdp"])) {
         //on viens de la page de login
         //on interroge la base et on renseigne les infos utiles au profile
@@ -1281,7 +1314,7 @@ if (isset($_SESSION["role"])) {
         $statmt->bindParam(":log", $_POST["login"], PDO::PARAM_STR);
         $statmt->execute();
 
-        if ($statmt->rowCount()!=0){
+        if ($statmt->rowCount() != 0) {
             $rep = $statmt->fetchAll(PDO::FETCH_ASSOC);
             $passwordHash = $rep[0]['mdp'];
             if (password_verify($_POST["mdp"], $passwordHash)) {
@@ -1289,15 +1322,12 @@ if (isset($_SESSION["role"])) {
                 $_SESSION["id_user"] = $rep[0]["id_user"];
                 $_SESSION["login"] = $rep[0]["login"];
                 header("Location: index.php");
-            }
-            else{
+            } else {
                 header("Location: index.php?error=Erreur de connexion, vérifier vos identifiants");
-            } 
-        }
-        else {
+            }
+        } else {
             header("Location: index.php?error=Erreur de connexion, vérifier vos identifiants");
         }
-
     } else {
         // login fail et on ne viens pas de la page de login
         //on kick

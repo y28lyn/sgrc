@@ -85,10 +85,8 @@ if ($_SESSION["role"] == "service") {
                     } ?>
                 </div>
                 <?php
-                $statmt28->execute();
-                $categories = $statmt28->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($categories as $categorie) {
-
+                foreach ($categories as $categorie){
+                
                     $cat = $categorie['id_cat'];
                     ?>
                     <div class="tab-content" id="tab-content-<?php echo $cat; ?>">
@@ -106,9 +104,11 @@ if ($_SESSION["role"] == "service") {
                                 $statmt30->execute();
                                 $plats = $statmt30->fetchAll(PDO::FETCH_ASSOC);
                                 echo '<table border="0">';
-                                foreach ($plats as $plat) {
+                                echo '<tr class="nomColonne"><td> Nom du plat </p></td><td> Prix </td><td> Quantité </td></tr>';
+                                foreach($plats as $plat){
                                     $id_p = $plat['id_plat'];
-                                    echo '<tr><td>' . $plat['nom_plat'] . '</td><td>' . $plat['description'] . '</td>';
+                                    echo '<tr><td>' . $plat['nom_plat'] . '<br> <p class="descPlat">' .'Desc : '. $plat['description'] . ' </p></td>';
+                                    echo '<td>' . $plat['PU_carte'] . '€</td>';
                                     echo '<td>';
                                     // boutons +
                                     echo '<form method="POST">';
@@ -200,55 +200,58 @@ if ($_SESSION["role"] == "service") {
                 }
             </script>
         </div>
-        <?php
-        
-        ?>
 
-        
-  <!-- Affichage de la commande -->
-<div class="ticket_de_caisse">
-    <table>
-        <?php foreach ($platsConsolides as $plat): ?>
-
-            <tr>
-                <!-- Affichage nom du plat -->
-                <td class="titre" style="color: black;">
-                    <?php echo $plat['nom_plat']; ?>
-                </td>
-
-                <!-- Affichez quantité du plat -->
-                <td>
-                    <?php echo $plat['quantite']; ?>
-                </td>
-
-                <!-- Affichage form commentaire -->
-                <td>
-                    <form method="POST">
-                        <input type="text" name="commentaire" size="5" value="<?php echo $plat['commentaire']; ?>">
-                        <input type="hidden" name="action" value="modifier_commentaire">
-                        <input type="hidden" name="id_ligne_ticket"
-                            value="<?php echo isset($plat['id_ligne_ticket']) ? $plat['id_ligne_ticket'] : ''; ?>">
-                </td>
-
-                <!-- Affichage bouton validation form commentaire -->
-                <td>
-                    <?php
-                    switch (true) {
-                        case isset($ligne['Statuts']) && $ligne['Statuts'] == 'En cours':
-                            ?>
-                            <button type="submit" value="modifier" class="btn btn-primary">
-                                <?php if (isset($plat['id_ligne_ticket'])): ?>
-                                    <i class="fa-solid fa-file-pen"></i>
-                                <?php else: ?>
-                                    <img class="icon_size" src="image\icone\pen-to-square.svg" alt="Icone Edit Categorie">
-                                <?php endif; ?>
-                            </button>
-                            <?php
-                            break;
-                    }
+        <!--Affichage de la commande-->
+        <div class="ticket_de_caisse">
+            <table>
+                <?php
+                foreach ($platsConsolides as $plat) {
+                    $id_p = $plat['id_plat'];
+                    $quantite = $plat['quantite'];
+                    $nomDuPlat = $plat['nom_plat'];
                     ?>
-                    </form>
-                </td>
+                    
+                    <div class="container_ticket">
+                        <tr>
+                             
+                            <?php 
+                            if(isset($plat['id_ligne_ticket'])){?>
+
+                                <!--Affichage nom du palt-->
+                                <td class="titre" style="color:black">
+                                    <?php echo $plat['nom_plat']; ?>
+                                    
+                                </td>
+
+                                <!--Affichez quantite du palt-->
+                                <td>
+                                    <?php echo $plat['quantite']; ?>
+                                </td>
+                                <!--Affichage form commentaire-->
+                                <td>
+                                <form method="POST">
+                                    <input type="text" name="commentaire" size="5" value="<?php echo $plat['commentaire'];?>">
+                                
+                                    <input type="hidden" name="action" value="modifier_commentaire">
+
+                                    <input type="hidden" name="id_ligne_ticket" value="<?php echo $plat['id_ligne_ticket']; ?>">
+
+                                </td>
+                                <!--Affichage bouton validation form commentaire-->
+                                <td>
+                                        <button class="logo" type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
+                                    </form>
+                                </td>
+
+                                
+                                <!--Form et bouton suppression d'un plat-->
+                                <td>
+                                    <form method="POST">
+                                    <button class="logo" type="submit"> <i class="fa-solid fa-trash-can"></i></button>
+                                        <input type="hidden" name="action" value="supprimer_ligne_ticket">
+                                        <input type="hidden" name="id_ligne_ticket" value="<?php echo $plat['id_ligne_ticket']; ?>">
+                                    </form>
+                                </td>
 
                 <!-- Form et bouton suppression d'un plat -->
                 <td>

@@ -41,6 +41,18 @@ body::-webkit-scrollbar-thumb:hover  {
   border-radius: 1rem;
 }
 
+.container_menu {
+  background-color: var(--color-white);
+  padding: 25px;
+  border-radius: 1rem;
+  width: 1000px;
+  max-width: 1000px;
+}
+
+.tabs {
+  text-align: center;
+}
+
 .tab-content{
   flex-direction: column;
   align-items: center;
@@ -56,14 +68,6 @@ table {
   justify-content: center;
   align-items: center;
 }
-
-
-
-.tab-content table td {
-   background-color: var(--color-primary); 
-  padding: 5px;
-}
-
 
 .tab-content table td input[type=number] {
   width: 40px;
@@ -84,57 +88,76 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
 }
 
+/* Appliquez le style à chaque deuxième ligne du tableau */
+.tab-content table tr:nth-child(even) {
+  background-color: #dddcdc; /* Couleur pour les lignes paires */
+}
+
+.tab-content table tr:nth-child(odd) {
+  background-color: #ffffff; /* Couleur pour les lignes impaires */
+}
+
+/* Style pour la première ligne (titres des colonnes) */
+.tab-content table tr:first-child {
+  background-color: #7380ec; /* Couleur pour la première ligne */
+  color: #ffffff !important; /* Couleur du texte pour la première ligne */
+}
+
+td {
+  padding: 10px;
+}
+
 .quantity{
   display: flex;  
   flex-direction: row;
   align-content: center;
 }
 
-.quantity button{
-  width: 50px;
-  height: 40px;
-  border-radius: 15px;
-  border: none;
-}
-
-.quantity-ticket .quantity-minus, .quantity-minus{
-  margin: 5px;
-  width: 30px;
-  border-radius: 5px;
-  background-color: #d32727;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.quantity-ticket:hover .quantity-minus:hover, .quantity-minus:hover{
-  background-color: #a01c1c;
-}
-
-.quantity-plus{
+/* Styles pour les boutons de quantité */
+.quantity button, .quantity-minus {
+  background-color: #7380ec; /* Couleur bleue */
+  color: #ffffff; /* Couleur du texte en blanc */
   margin: 5px;
   width: 35px;
+  border: none;
   border-radius: 5px;
-  border: solid black;
-  background-color: #2cc934;
-  font-size: 18px;
-  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.quantity button:hover {
+  background-color: #2980b9; /* Légère variation de couleur au survol */
+}
+
+.quantity button.quantity-minus {
+  margin-right: 5px; /* Marge entre les boutons */
+}
+
+.quantity button.quantity-plus {
+  margin-left: 5px; /* Marge entre les boutons */
+}
+
+.descPlat{
+  font-size: 12px;
 }
 
 #valider {
-  background-color: #0ea39c;
-  width: 100px;
-  height: 35px;
+  background-color: #7380ec; /* Couleur verte */
+  color: #ffffff; /* Couleur du texte en blanc */
   border: none;
-  outline: none;
+  padding: 10px 10px;
+  margin-left: 10px;
+  font-size: 1rem;
   border-radius: 5px;
-  overflow: hidden;
-  font-size: 1.1rem;
-  font-weight: 500;
   cursor: pointer;
-  color: var(--color-dark);
-  padding: 0 10px;
-  margin: 5px 10px;
+  transition: background-color 0.3s ease;
 }
+
+#valider:hover {
+  background-color: #2980b9; /* Légère variation de couleur au survol */
+}
+
 
 .texte1 {
   text-align: center;
@@ -166,25 +189,11 @@ input[type=number]::-webkit-inner-spin-button {
 
 td button{
   margin: 5px;
+  border: none;
 }
 
 .commentaire {
   padding: 2px;
-}
-
-.btn_modifier {
-  margin-right: 8px;
-}
-.btn_modifier,
-.btn_supprimer {
-  padding: 4px;
-  background-color: var(--color-primary);
-  cursor: pointer;
-  color: var(--color-dark);
-  border: none;
-  outline: none;
-  border-radius: 3px;
-  overflow: hidden;
 }
 
 @media only screen and (orientation: landscape) {
@@ -195,14 +204,21 @@ td button{
   }
 }
 
-.ticket_de_caisse button{
+.ticket_de_caisse button {
   background: transparent;
   border: none;
 }
 
-.ticket_de_caisse i{
+.ticket_de_caisse .quantity-minus {
+  background-color: #7380ec;
+  height: 30px;
+  width: 35px;
+}
+
+.ticket_de_caisse i {
   color: var(--color-primary);
 }
+
 
 .tab-button{
   padding: 4px;
