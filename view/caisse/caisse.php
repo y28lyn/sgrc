@@ -172,19 +172,19 @@ if ($_SESSION["role"] == "caisse") {
 
 		<script>
 			function load_tickets() {
-				// Utiliser Ajax pour récupérer les nouveaux tickets sans recharger la page entière
+				//Récupérer les nouveaux tickets sans recharger la page entière en ajax
 				$.ajax({
-					url: "/SGRC/view/caisse/load_ticket.php",
+					url: "/SGRC/view/caisse/load_tickets.php",
 					type: "GET",
 					success: function(data) {
-						// Mettre à jour seulement la partie nécessaire de la page
+						// Mettre à jour seulement la partie nécessaire
 						$(".card_ticket").html(data);
 					}
 				});
 			}	
 
-// Appeler la fonction toutes les 2 secondes
-setInterval(load_tickets, 2000);
+			// Appeler la fonction toutes les 2 secondes
+			setInterval(load_tickets, 2000);
 
 		</script>
 	</body>
