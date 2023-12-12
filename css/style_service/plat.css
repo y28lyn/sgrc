@@ -107,12 +107,12 @@ input[type=number]::-webkit-inner-spin-button {
 /* Appliquez le style à chaque deuxième ligne du tableau */
 .tab-content table tr:nth-child(even) {
   background-color: var(--color-cartemenu-dark); /* Couleur pour les lignes paires */
-  color:var(--color-white);
+  color:var(--color-dark);
 }
 
 .tab-content table tr:nth-child(odd) {
-  background-color: var(--color-cartemenu-light)#ffffff; /* Couleur pour les lignes impaires */
-  color:var(--color-white);
+  background-color: var(--color-cartemenu-light); /* Couleur pour les lignes impaires */
+  color:var(--color-dark);
 }
 
 /* Style pour la première ligne (titres des colonnes) */
@@ -272,6 +272,10 @@ td button{
   height: 80%;
   padding-left: 10px;
   }
+
+.ticket_de_caisse td.titre{
+  color:(--color-dark);
+}
 
 .ticket_de_caisse td{
   padding-right: 10px;

@@ -210,7 +210,7 @@ if ($_SESSION["role"] == "service") {
                             if(isset($plat['id_ligne_ticket'])){?>
 
                                 <!--Affichage nom du palt-->
-                                <td class="titre" style="color:black">
+                                <td class="titre">
                                     <?php echo $plat['nom_plat']; ?>
                                     
                                 </td>
@@ -260,7 +260,7 @@ if ($_SESSION["role"] == "service") {
                             
 
                             <!--Affichage nom du palt-->
-                            <td class="titre" style="color:black">
+                            <td class="titre"">
                                 <?php echo $plat['nom_plat']; ?>
                             </td>
 
