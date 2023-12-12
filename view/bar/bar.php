@@ -1,6 +1,10 @@
 <?php
 if ($_SESSION["role"] == "bar") {
 
+	//on récupère l'ensemble des commandes de boissons
+	$statmt22 = $pdo->prepare('SELECT * FROM ticket,sgr_table WHERE ticket.id_table = sgr_table.id_table ORDER BY ordre ASC, date_c DESC');
+	$statmt22->execute();
+	$sumtickets = $statmt22->fetchAll(PDO::FETCH_ASSOC);
 ?>
 	<!DOCTYPE html>
 	<html lang="fr">
@@ -50,6 +54,11 @@ if ($_SESSION["role"] == "bar") {
 				<div class="card_ticket">
 						<?php
 						foreach ($ticketsBar as $ticketBar) {
+							foreach ($sumtickets as $sumticket) {
+								if ($sumticket['id_ticket'] == $ticketBar['id_ticket']) {
+									$idticket_caisse = $ticketBar['id_ticket'];
+									$statmt22->execute();
+									$status_ticket = $statmt22->fetch();
 						?>
 									<div class="ticket" id="load_ticket">
 
@@ -57,6 +66,8 @@ if ($_SESSION["role"] == "bar") {
 										<table>
 											<caption>
 												<?php
+
+
 												echo "Table n° :" . "\n" . $ticketBar['numero_table'] . '<br/>';
 												echo "N° Ticket : #";
 												$numTicket = $ticketBar['id_ticket'];
@@ -65,9 +76,9 @@ if ($_SESSION["role"] == "bar") {
 												}
 												echo $numTicket . '<br>';
 												$status = "";
-												if ($ticket['statut'] == 'PAY') {
+												if ($sumticket['statut'] == 'PAY') {
 													$status = "<p class='success'>PAY</p>";
-												} elseif ($ticket['statut'] == 'VAL') {
+												} elseif ($sumticket['statut'] == 'VAL') {
 													$status = "<p class='warning'>VALIDE</p>";
 												} else {
 													$status = "<p class='danger'>SAISIE</p>";
@@ -80,6 +91,7 @@ if ($_SESSION["role"] == "bar") {
 													<th>Quantite</th>
 													<th>Nom Boissons</th>
 													<th>Commentaires</th>
+													<th>Statuts</th>
 												</tr>
 											</thead>
 
@@ -88,17 +100,30 @@ if ($_SESSION["role"] == "bar") {
 											$statmt17->execute();
 											$commandes = $statmt17->fetchAll();
 											foreach ($commandes as $commande) {
+												$idTicket = $commande['id_ticket'];
+												$id_p = $commande['id_plat'];
 											?>
 												<tbody>
 													<tr>
 														<td>
-															<?php echo $commande['quantite']; ?>
+															<?php echo $commande['quantité']; ?>
 														</td>
 														<td>
 															<?php echo $commande['nom_plat']; ?>
 														</td>
 														<td>
 															<?php echo $commande['commentaires']; ?>
+														</td>
+														<td>
+															<?php echo $commande['Stat']; ?>
+														</td>
+														<td>
+														<form method="POST">
+															<input name="action" type="hidden" value="Pret"> <!-- Action "Pret" -->
+															<input name="id_ticket" type="hidden" value=<?php echo $idTicket ?>> <!-- Incluez l'ID du ticket ici -->
+															<input name="id_plat" type="hidden" value=<?php echo $id_p ?>> <!-- Incluez l'ID du plat ici -->
+															<input type="submit" name="Validez" value="Prêt"> <!-- Vous pouvez personnaliser le libellé du bouton si nécessaire -->
+                                        				</form>
 														</td>
 													</tr>
 												</tbody>
@@ -109,7 +134,8 @@ if ($_SESSION["role"] == "bar") {
 									</div>
 						<?php
 								}
-						 ?>
+							}
+						} ?>
 					</div>
 
 				</div>
@@ -159,7 +185,8 @@ if ($_SESSION["role"] == "bar") {
 		setInterval('load_ticket()', 2000);
 
 		function load_ticket() {
-			location.reload();
+			// Fonction load permet de charger le contenu un fichier a jquery
+			$(".card_ticket").load("/SGRC/view/bar/load_ticket.php");
 		};
 	</script>
 	</body>

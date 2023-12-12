@@ -1,6 +1,6 @@
 <?php
 require_once('connexion.php');
-//inclusion de la laison bdd 
+//inclusion de la laison bdd
 if (isset($_SESSION["role"])) {
     switch ($_SESSION["role"]) {
 
@@ -125,7 +125,7 @@ if (isset($_SESSION["role"])) {
                                 $Pm = $_POST["PU"];
                                 $dtm = $_POST["date_menu"];
                                 $vu = $_POST["vu"];
-                                $statmt = $pdo->prepare("INSERT INTO `menu` (`id_menu`, `nom_menu`, `description`, `PU`,`date_menu`,`vu`) VALUES (NULL, '" . $nm . "', '" . $dm . "', '" . $Pm . "', '" . $dtm . "', '" . $vu . "');");
+                                $statmt = $pdo->prepare("INSERT INTO `menu` (`id_menu`, `nom_menu`, `description`, `PU`,`date_menu`,`vu`) VALUES (NULL, \"" . $nm . "\", \"" . $dm . "\", \"" . $Pm . "\", \"" . $dtm . "\", \"" . $vu . "\");");
                                 $statmt->execute();
 
                                 $stmt2 = $pdo->prepare("SELECT `id_menu` FROM `menu` ORDER BY id_menu DESC LIMIT 1");
@@ -189,7 +189,7 @@ if (isset($_SESSION["role"])) {
                                 $_SESSION['id_m'] = $_POST['id_m'];
                                 $requete_carte = $pdo->prepare("SELECT P.id_plat, P.nom_plat, P.description, P.type_plat, S.nom_sous_cat, P.PU_carte from menu_contient_plat MP, plat P, sous_categorie S, menu M WHERE MP.id_menu=M.id_menu AND MP.id_plat=P.id_plat AND P.id_sous_cat = S.id_sous_cat AND P.vu=0 and MP.id_menu = :id_m;");
                                 $requete_carte->bindParam(':id_m', $id_m, PDO::PARAM_INT);
-                                header('location: /SGRC/index.php?page=carte_menu');
+                                header('?page=carte_menu');
                                 break;
                             }
 
@@ -714,6 +714,10 @@ if (isset($_SESSION["role"])) {
                                     $requete_carte->bindParam(':id_m', $id_m, PDO::PARAM_INT);
                                     $requete_carte->execute();
                                     $cartes = $requete_carte->fetchAll();
+                                    $statmt = $pdo->prepare('SELECT nom_sous_cat FROM sous_categorie');
+                                    $statmt->execute();
+                                    $cat_plats = $statmt->fetchAll();
+
 
                                     include "view/admin/produit/modifier/carte_menu.php";
 
@@ -736,9 +740,22 @@ if (isset($_SESSION["role"])) {
                             $statmt->bindParam(':id_m', $id_m, PDO::PARAM_INT);
                             $statmt->execute();
                             $cartes = $statmt->fetchAll();
+                            
                             $statmt = $pdo->prepare('SELECT * FROM sous_categorie');
                             $statmt->execute();
                             $cat_plat = $statmt->fetchAll();
+
+                            $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+
+                            //Récup des sous catégories des catégories
+                            $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie inner join plat on plat.id_sous_cat = sous_categorie.id_sous_cat where id_cat = :idcat AND (SELECT COUNT(P.id_plat) FROM menu M, plat P, menu_contient_plat MP,sous_categorie SC WHERE P.id_plat=MP.id_plat AND M.id_menu=MP.id_menu and P.id_sous_cat=SC.id_sous_cat and P.id_sous_cat = :idsouscat and P.vu = 0 and M.date_menu = CURDATE()) is not null GROUP BY nom_sous_cat order by ordre_aff_sous_cat'); /*  */
+                            $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+                            $statmt29->bindParam(':idsouscat', $sous_cat, PDO::PARAM_INT);
+
+
+                            //Récup des plats des sous catégories
+                            $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
+                            $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
                             include "view/admin/produit/ajouter/carte_menu.php";
                             break;
                             }
@@ -825,10 +842,9 @@ if (isset($_SESSION["role"])) {
                 $statmt16->execute();
                 $tickets = $statmt16->fetchAll(PDO::FETCH_ASSOC);
 
-                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire AS commentaires, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat != "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
+                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantité, ligne_ticket.commentaire AS commentaires, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat != "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
                 $statmt17->bindParam(':id_ticket', $u, PDO::PARAM_INT);
 
-                
 
                 include "view/cuisine/cuisine.php";
                 break;
@@ -836,6 +852,32 @@ if (isset($_SESSION["role"])) {
 
 
         case "bar": {
+
+            if (isset($_POST) && isset($_POST['action'])) {
+                switch ($_POST['action']) {
+        
+                    case "Pret": {
+                        if (isset($_POST["id_ticket"]) && isset($_POST["id_plat"])) {
+                            $idTicket = $_POST['id_ticket'];
+                            $id_p = $_POST['id_plat'];
+                            
+                            
+                            // Mettez à jour le statut du ticket à "PAY"
+                            $stmt = $pdo->prepare("UPDATE ligne_ticket SET Statuts = 'Prêt à servir' WHERE id_ticket = :idticket AND id_plat = :idplat AND Statuts = 'En cours'");
+                            $stmt->bindParam(':idticket', $idTicket, PDO::PARAM_STR);
+                            $stmt->bindParam(':idplat', $id_p, PDO::PARAM_STR);
+                            $stmt->execute();
+        
+                            // Effectuez d'autres actions spécifiques à la partie "bar" ici, si nécessaire
+                        }
+                        break;
+                    }
+                    default: {
+                        echo "erreur d'action";
+                    }
+                }
+            }
+        }
                 //liste des requêtes de l'interface bar
 
                 // recup de la liste des tickets
@@ -843,11 +885,11 @@ if (isset($_SESSION["role"])) {
                 $statmt16->execute();
                 $ticketsBar = $statmt16->fetchAll(PDO::FETCH_ASSOC);
 
-                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire AS commentaires, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat = "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
+                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantité, ligne_ticket.commentaire AS commentaires, ligne_ticket.Statuts AS Stat, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat = "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire, ligne_ticket.Statuts ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
                 $statmt17->bindParam(':id_ticket', $u, PDO::PARAM_INT);
                 include "view/bar/bar.php";
                 break;
-            }
+            
 
 
         case "service": {
@@ -906,11 +948,19 @@ if (isset($_SESSION["role"])) {
                                 $_SESSION['id_ticket'] = $check_nbC_rec["id_ticket"];
                                 if ($nb_couvert_ticket > 0) {
 
-                                    header("Location:index.php?page=plat");
+                                    //Récup des catégorie de palt
+                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+
+                                    //Récup des lignes de ticket du ticket
+                                    $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket AND P.vu = 0 ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
+                                    $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
+
+
+                                    include "view/service/prise_de_commande/plat.php";
                                     // si c'est supérieur a 0 rediretion sur la page plat pour saisir les plat pour le client.
                                 } else { //si c'est 0 on dirige sur le formulaire de nb de couvert
-                                    header("Location:index.php?page=nbcouv_modif");
-                                    //include "view/service/prise_de_commande/nbCouvert.php";
+
+                                    include "view/service/prise_de_commande/nbCouvert.php";
                                 }
                                 break;
                             }
@@ -935,7 +985,7 @@ if (isset($_SESSION["role"])) {
                                 $_SESSION['nb_couvert'] = $_POST['nb_couvert'];
 
                                 //Requête pour récup l'id du ticket
-                                $recupTicket = $pdo->prepare('SELECT id_ticket FROM ticket where id_table = :ccc AND statut != "PAY"');
+                                $recupTicket = $pdo->prepare('SELECT id_ticket FROM ticket where id_table = :ccc order by id_ticket DESC LIMIT 1');
                                 $recupTicket->bindParam(":ccc", $idTable, PDO::PARAM_INT);
                                 $recupTicket->execute();
                                 $idTicket = $recupTicket->fetch();
@@ -949,7 +999,24 @@ if (isset($_SESSION["role"])) {
                                 //Exécute une requête sur la base de données
                                 $reqete->execute();
 
-                                header("Location:index.php?page=plat");
+                                //Récup des catégorie de palt
+                                $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+
+                                //Récup des sous catégories des catégories
+                                $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie inner join plat on plat.id_sous_cat = sous_categorie.id_sous_cat where id_cat = :idcat AND (SELECT COUNT(P.id_plat) FROM menu M, plat P, menu_contient_plat MP,sous_categorie SC WHERE P.id_plat=MP.id_plat AND M.id_menu=MP.id_menu and P.id_sous_cat=SC.id_sous_cat and P.id_sous_cat = :idsouscat and P.vu = 0 and M.date_menu = CURDATE()) is not null GROUP BY nom_sous_cat order by ordre_aff_sous_cat'); /*  */
+                                $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+                                $statmt29->bindParam(':idsouscat', $sous_cat, PDO::PARAM_INT);
+
+
+                                //Récup des plats des sous catégories
+                                $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
+                                $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
+
+                                //Récup des lignes de ticket du ticket
+                                $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
+                                $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
+
+                                include "view/service/prise_de_commande/plat.php";
                                 break;
                             }
 
@@ -960,42 +1027,68 @@ if (isset($_SESSION["role"])) {
                                 $_SESSION['id_ticket'] = $idTicket;
                                 $id_p = $_POST['id_plat'];
                                 $n = $_POST['nb_plat'];
-                                
     
                                 for($i = 1; $i <= $n; ++$i)
                                 {
-                                    $stmt = $pdo->prepare("INSERT INTO ligne_ticket (id_ticket, id_plat) VALUES (:idticket, :idplat)");
+                                    $stmt = $pdo->prepare("INSERT INTO ligne_ticket (id_ticket, id_plat, Statuts) VALUES (:idticket, :idplat,'En cours')");
                                     $stmt->bindValue(':idticket', $idTicket, PDO::PARAM_STR);
                                     $stmt->bindValue(':idplat', $id_p, PDO::PARAM_STR);
                                     $stmt->execute();                          
                                 }     
     
-                                header("Location:index.php?page=plat");
+                                //Récup des catégorie de plat
+                                $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+                                
+                                //Récup des sous catégories des catégories
+                                $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat ');
+                                $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+                            
+                                //Récup des plats des sous catégories
+                                $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
+                                $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
+                            
+                                //Récup des lignes de ticket du ticket
+                                $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket AND p.vu=0 ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
+                                $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
+                                include "view/service/prise_de_commande/plat.php";
                                 break;                       
                             }
 
                         case "diminue_ligne_ticket": {
 
-                            if(isset($_POST['id_ligne_ticket']))
-                            {
-                                //Supprime un ligne du ticket / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
-                                $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = :id_ligne_ticket");
-                                $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
-                                $requeteDiminueLigneTicketCom->execute();
-                            }
-                            else{
-                                $id_plat = $_POST['id_plat'];
-                                $id_ticket = $_POST['id_ticket'];
-                                //Supprime un ligne du ticket
-                                $requeteDiminueLigneTicket = $pdo->prepare("DELETE ligne_ticket.* FROM ligne_ticket JOIN (SELECT id_ligne_ticket FROM ligne_ticket WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND commentaire IS NULL LIMIT 1 ) AS subquery ON ligne_ticket.id_ligne_ticket = subquery.id_ligne_ticket;");
-                                //$requeteDiminueLigneTicket = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ticket = :id_ticket AND id_plat = :id_plat and commentaire is NULL LIMIT 1)");
-                                $requeteDiminueLigneTicket->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
-                                $requeteDiminueLigneTicket->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
-                                $requeteDiminueLigneTicket->execute();
-                            }
+                        if(isset($_POST['id_ligne_ticket']))
+                        {
+                            //Supprime un ligne du ticket / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
+                            $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ligne_ticket=:id_ligne_ticket)");
+                            $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
+                            $requeteDiminueLigneTicketCom->execute();
+                        }
+                        else{
+                            $id_plat = $_POST['id_plat'];
+                            $id_ticket = $_POST['id_ticket'];
+                            //Supprime un ligne du ticket
+                            $requeteDiminueLigneTicket = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ticket = :id_ticket AND id_plat = :id_plat and commentaire is NULL LIMIT 1)");
+                            $requeteDiminueLigneTicket->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                            $requeteDiminueLigneTicket->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                            $requeteDiminueLigneTicket->execute();
+                        }
                         
                             /*Refresh Ticket*/
-                            header("Location:index.php?page=plat");
+                            //Récup des catégorie de plat
+                            $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+                            
+                            //Récup des sous catégories des catégories
+                            $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat ');
+                            $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+                        
+                            //Récup des plats des sous catégories
+                            $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
+                            $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
+                        
+                            //Récup des lignes de ticket du ticket
+                            $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket AND p.vu=0 ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
+                            $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
+                            include "view/service/prise_de_commande/plat.php";
                             break;
                         }        
                         
@@ -1032,8 +1125,21 @@ if (isset($_SESSION["role"])) {
 
                             }
 
-                            /*Refresh Ticket*/
-                            header("Location:index.php?page=plat");
+                            //Récup des catégorie de palt
+                            $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+                            
+                            //Récup des sous catégories des catégories
+                            $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat');
+                            $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+
+                            //Récup des plats des sous catégories
+                            $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
+                            $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
+
+                            //Récup des lignes de ticket du ticket
+                            $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
+                            $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
+                            include "view/service/prise_de_commande/plat.php";
                             break;
                         }
 
@@ -1043,7 +1149,7 @@ if (isset($_SESSION["role"])) {
                                 if(isset($_POST['id_ligne_ticket']))
                                 {
                                     //Supprime toutes les lignes du plat avec le commentaire / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
-                                    $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = :id_ligne_ticket");
+                                    $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = ( SELECT id_ligne_ticket FROM `ligne_ticket` WHERE id_ligne_ticket=:id_ligne_ticket)");
                                     $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
                                     $requeteDiminueLigneTicketCom->execute();
                                 }
@@ -1057,8 +1163,23 @@ if (isset($_SESSION["role"])) {
                                     $requeteDiminueLigneTicket->execute();
                                 }
 
-                                /*Refresh Ticket*/
-                                header("Location:index.php?page=plat");
+                                //Récup des catégorie de plat
+                                $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+
+
+                                //Récup des sous catégories des catégories
+                                $statmt29 = $pdo->prepare('SELECT * FROM sous_categorie where id_cat = :idcat  ');
+                                $statmt29->bindParam(':idcat', $cat, PDO::PARAM_INT);
+
+                                //Récup des plats des sous catégories
+                                $statmt30 = $pdo->prepare('SELECT * FROM plat where id_sous_cat = :id_sous_cat');
+                                $statmt30->bindParam(':id_sous_cat', $sous_cat, PDO::PARAM_INT);
+
+                                //Récup des lignes de ticket du ticket
+                                $statmt31 = $pdo->prepare('SELECT * FROM ligne_ticket LT, plat P, sous_categorie SC, categorie_plat C WHERE LT.id_plat = P.id_plat  AND P.id_sous_cat = SC.id_sous_cat AND SC.id_cat = C.id_cat AND id_ticket = :idTicket ORDER BY C.ordre_affichage_cat ASC , SC.ordre_aff_sous_cat ASC'); /*  */
+                                $statmt31->bindParam(':idTicket', $idTicket, PDO::PARAM_INT);
+                                include "view/service/prise_de_commande/plat.php";
+
                                 break;
                             }
 
@@ -1066,35 +1187,7 @@ if (isset($_SESSION["role"])) {
 
                             }
                     }
-                } 
-
-                if (isset($_GET["page"])) {
-                    switch ($_GET["page"]) {
-                        case "plat": {
-                            include "view/service/prise_de_commande/plat.php";
-                            break;
-                        }
-                        case "nbcouv": {
-                            include "view/service/prise_de_commande/nbCouvert.php";
-                            break;
-                        }
-                        case "nbcouv_modif": {
-                            include "view/service/prise_de_commande/nbCouvert_Modif.php";
-                            break;
-                        }
-
-                    default: {
-                            //par defaut on fait choisir la table
-                    //recup de la liste des tables
-                    $statmt = $pdo->prepare('SELECT * FROM sgr_table where vu=0 order by `numero_table`');
-                    $statmt->execute();
-                    $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
-                    include "view/service/prise_de_commande/prise_de_commande.php";
-                            break;
-                        }
-                    }
-                }
-                else {
+                } else {
                     //par defaut on fait choisir la table
                     //recup de la liste des tables
                     $statmt = $pdo->prepare('SELECT * FROM sgr_table where vu=0 order by `numero_table`');
@@ -1137,7 +1230,7 @@ if (isset($_SESSION["role"])) {
                 $ticketsBar2 = $statmt185->fetchAll(PDO::FETCH_ASSOC);
 
                 // recup nom plat / quantite / prix unitaire
-                $statmt17 = $pdo->prepare('SELECT DISTINCT ticket.id_ticket, plat.nom_plat, COUNT(nom_plat) AS quantite ,ligne_ticket.commentaire, (plat.PU_carte * COUNT(nom_plat)) as prix FROM ligne_ticket, plat, ticket, sous_categorie, categorie_plat WHERE ticket.id_ticket = :id_ticket and ticket.id_ticket = ligne_ticket.id_ticket and plat.id_plat=ligne_ticket.id_plat and plat.id_sous_cat = sous_categorie.id_sous_cat and sous_categorie.id_cat = categorie_plat.id_cat GROUP BY nom_plat ORDER BY ordre_affichage_cat, ordre_aff_sous_cat;');
+                $statmt17 = $pdo->prepare('SELECT DISTINCT ticket.id_ticket, plat.nom_plat, COUNT(nom_plat) AS quantité ,ligne_ticket.commentaire, (plat.PU_carte * COUNT(nom_plat)) as prix FROM ligne_ticket, plat, ticket, sous_categorie, categorie_plat WHERE ticket.id_ticket = :id_ticket and ticket.id_ticket = ligne_ticket.id_ticket and plat.id_plat=ligne_ticket.id_plat and plat.id_sous_cat = sous_categorie.id_sous_cat and sous_categorie.id_cat = categorie_plat.id_cat GROUP BY nom_plat ORDER BY ordre_affichage_cat, ordre_aff_sous_cat;');
                 $statmt17->bindParam(':id_ticket', $idticket_caisse, PDO::PARAM_INT);
 
 
