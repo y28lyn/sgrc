@@ -66,7 +66,9 @@ body {
 .ticket h2 {
   font-size: 24px;
   margin-bottom: 15px;
-  color: var(--color-primary); /* Utilisez la couleur principale de votre palette */
+  color: var(
+    --color-primary
+  ); /* Utilisez la couleur principale de votre palette */
 }
 
 /* Tableau */
@@ -84,7 +86,9 @@ body {
 /* En-tête du tableau */
 .ticket th {
   padding: 10px;
-  background-color: var(--color-primary); /* Utilisez la couleur principale de votre palette */
+  background-color: var(
+    --color-primary
+  ); /* Utilisez la couleur principale de votre palette */
   color: #fff;
 }
 
@@ -101,14 +105,15 @@ body {
   margin-top: 20px;
   font-weight: bold;
   font-size: 18px;
-  color: var(--color-primary); /* Utilisez la couleur principale de votre palette */
-  
+  color: var(
+    --color-primary
+  ); /* Utilisez la couleur principale de votre palette */
 }
 
 /* Bouton de paiement */
 /* Style du bouton "Payer" */
 input[type="submit"] {
-  background-color:#7380ec; /* Couleur de fond */
+  background-color: #727bcc; /* Couleur de fond */
   color: #fff; /* Couleur du texte */
   border: none; /* Supprime la bordure */
   padding: 10px 20px; /* Espacement intérieur */
@@ -120,11 +125,21 @@ input[type="submit"] {
 
 /* Style au survol du bouton */
 input[type="submit"]:hover {
-  background-color: black; /* Nouvelle couleur de fond au survol */
+  opacity: 0.9;
 }
 
-/* Ligne du commentaire */
-.commentaire {
-  width: 200px;
-  word-wrap: break-word;
+input[value="En Saisie"] {
+  background-color: #565656;
+}
+
+input[value="En cours"] {
+  background-color: #e2bc41;
+}
+
+input[value="Prêt"] {
+  background-color: #00de5d;
+}
+
+input[value="Servi"] {
+  background-color: #565656;
 }
