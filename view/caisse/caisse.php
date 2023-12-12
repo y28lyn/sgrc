@@ -57,6 +57,17 @@ if ($_SESSION["role"] == "caisse") {
 			<main>
 				<!-- Titre de la page -->
 				<h1>Commande en cours</h1>
+				<br>
+
+				<?php 
+				 $dateDuJour = date("Y-m-d");
+				 $requetePrixMenu = $pdo->prepare("SELECT PU FROM menu WHERE date_menu = :dateDuJour;");
+				 $requetePrixMenu->bindParam(':dateDuJour', $dateDuJour);
+				 $requetePrixMenu->execute(); 
+				 $prixMenu = $requetePrixMenu->fetch();				 
+				 ?>
+
+				 
 
 				<!-- Section des tickets -->
 				<div class="card_ticket">
@@ -64,9 +75,11 @@ if ($_SESSION["role"] == "caisse") {
 					// Boucle pour chaque ticket en cours au bar
 					foreach ($ticketsBar as $ticketBar) {
 					?>
+
 						<div class="ticket">
 							<?php
 							// Affichage du numero de la table et du numero de ticket
+							
 							?>
 
 							<!-- Tableau pour afficher les details de la commande -->
@@ -90,7 +103,8 @@ if ($_SESSION["role"] == "caisse") {
 								<thead>
 									<tr>
 										<th>Quantit&eacute;</th>
-										<th>Nom du Produit</th>
+										<th>Description</th>
+										<!-- <th>Nom du Produit</th> -->
 										<th>Prix</th>
 									</tr>
 								</thead>
@@ -100,16 +114,25 @@ if ($_SESSION["role"] == "caisse") {
 								$idticket_caisse = $ticketBar['id_ticket'];
 								$statmt17->execute();
 								$commandes = $statmt17->fetchAll();
-
+								?>
+								<tbody>
+								<tr>	
+									<td><?php echo $ticketBar['nb_couvert']; ?> </td>
+									<td><?php echo 'Menu'; ?> </td>
+									<td><?php echo $prixMenu['PU'] * $ticketBar['nb_couvert']; ?>€</td>
+								</tr>
+								<tr></tr>
+							</tbody>
+							<?php
+									
 								// Recuperation du prix total pour ce ticket
 								$statmt20->execute();
 								$prixTT = $statmt20->fetch(PDO::FETCH_ASSOC);
-
 								// Affichage des details de chaque commande
 								foreach ($commandes as $commande) {
 								?>
 									<tbody>
-										<tr>
+										<tr>	
 											<td><?php echo $commande['quantite']; ?> </td>
 											<td><?php echo $commande['nom_plat']; ?> </td>
 											<td><?php echo number_format($commande['prix'], 2); ?>€</td>
@@ -119,12 +142,13 @@ if ($_SESSION["role"] == "caisse") {
 
 								<?php
 								}
+								// var_dump($prixMenu)
 								?>
-
+							
 							</table>
 
 							<!-- Affichage du prix total pour ce ticket -->
-							<tr>Prix Total : <?php echo number_format($prixTT['TT'], 2); ?>€</tr>
+								 <tr>Prix Total : <?php echo $prixMenu['PU'] * $ticketBar['nb_couvert'] + $prixTT['TT']; ?>€</tr>
 
 							<!-- Formulaire pour payer le ticket -->
 							<tr>
@@ -190,8 +214,9 @@ if ($_SESSION["role"] == "caisse") {
 	</body>
 
 	</html>
-<?php
 
+	
+<?php
 } else {
 	echo ("vous n'avez pas le droit d'être là");
 	header("Location:../../../index.php");
