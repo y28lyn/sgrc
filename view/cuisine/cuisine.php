@@ -141,7 +141,7 @@ if ($_SESSION["role"] == "cuisine") {
 				}
 				?>
 				<div class="profil-photot">
-					<img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt="">
+					<img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt="">
 				</div>
 			</div>
 		</div>

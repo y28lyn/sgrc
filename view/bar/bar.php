@@ -141,7 +141,7 @@ if ($_SESSION["role"] == "bar") {
 				}
 				?>
 				<div class="profil-photot">
-					<img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt="">
+					<img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt="">
 				</div>
 			</div>
 		</div>
@@ -154,14 +154,6 @@ if ($_SESSION["role"] == "bar") {
 	<!-- SCRIPT FONT AWESOME -->
 	<script src="https://kit.fontawesome.com/438cd94e6c.js" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
-		// Recharger la page avce intervale
-		setInterval('load_ticket()', 2000);
-
-		function load_ticket() {
-			location.reload();
-		};
-	</script>
 	</body>
 
 	</html>

@@ -61,6 +61,23 @@ body::-webkit-scrollbar-thumb:hover  {
 .sub-tab-button{
   margin: 10px;
   width: 200px;
+  height: 35px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: #73b4c6;
+  color: var(--color-white);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+
+
+.sub-tab-button:checked {
+  background-color: var(--color-white);
+  color: 73b4c6;
+  border: 3px solid #73b4c6;
 }
 
 table {
@@ -219,19 +236,29 @@ td button{
   color: var(--color-primary);
 }
 
-
 .tab-button{
+  font-size: 16px;
   padding: 4px;
-  background-color: var(--color-info-dark);
+  background-color: var(--color-primary);
   cursor: pointer;
-  color: var(--color-dark);
+  color: var(--color-white);
   border: none;
   outline: none;
   border-radius: 3px;
   overflow: hidden;
-  width: 100px;
+  width: 110px;
   height: 40px;
 }
+
+.tab-button:hover,
+.tab-button:focus,
+.tab-button:target {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border: 3px solid var(--color-primary);
+}
+
+
 .ticket_de_caisse{
   background-color: var(--color-ticket);
   border-radius: 1rem;
@@ -248,6 +275,7 @@ td button{
   }
 
 .ticket_de_caisse td{
+  padding-right: 10px;
   margin: 5px;
 }
 

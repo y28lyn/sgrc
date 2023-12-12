@@ -27,20 +27,33 @@ if ($_SESSION["role"] == "admin") {
             </div>
         </div>
         <form action="" method="POST" id="ValidationDuFormulaireTable">
-        <input type="hidden" name="action" value="ajouter table">
+            <input type="hidden" name="action" value="ajouter table">
             <a href="?page=table" class="back_btn">Retour</a>
             <h2>Ajouter une table </h2>
             <!-- <label for="id_table">Identifiant</label> -->
             <input name="id_table" id="id_table" type="hidden">
             <!-- Le numero de la table -->
             <label for="numero_table">Numero de la table</label>
-            <input name="numero_table" id="numero_table" autofocus="autofocus" type="number" min="1" > <br>
+            <input name="numero_table" id="numero_table" autofocus="autofocus" type="number" min="1"> <br>
             <!-- Le type de table -->
             <label for="type_table">Type de table</label>
             <select name="type_table" id="type_table">
-                <option value="CAR">CAR</option>
-                <option value="RON">RON</option>
-            </select> <br>
+                <?php
+                // Options manuelles
+                $optionsManuelles = array("Carrée", "Ronde", "Rectangulaire");
+
+                // Boucle pour les options manuelles
+                foreach ($optionsManuelles as $optionManuelle) {
+                ?>
+                    <option value="<?php echo $optionManuelle; ?>">
+                        <?php echo $optionManuelle; ?>
+                    </option>
+                <?php
+                }
+
+
+                ?>
+            </select><br>
             <!--visible-->
             <label for="vu">visible/invisible</label>
             <select name="vu" id="vu">

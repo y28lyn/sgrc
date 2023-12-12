@@ -78,6 +78,7 @@ if ($_SESSION["role"] == "admin") {
                 </div>
             </aside>
             <!-- fin aside -->
+            
             <main>
                 <h1>Tables</h1>
                 <div class="Produits">
