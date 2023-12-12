@@ -17,8 +17,31 @@ if (isset($_SESSION["role"])) {
                                 $num_table = htmlspecialchars($_POST['numero_table']);
                                 $type_table = htmlspecialchars($_POST['type_table']);
                                 $vu_table = htmlspecialchars($_POST['vu']);
-                                $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
-                                header('location: /SGRC/index.php?page=table');
+
+                                $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
+                                $statmt->execute();
+                                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
+                                
+                                $compteur = 0;
+                                
+                                foreach ($tables as $table){
+                                    $tableNUM = $table['numero_table'];
+                                    if ( $tableNUM === $num_table) {
+                                        $compteur += 1;
+                                    }
+                                }
+
+                                if($compteur === 0){
+                                    $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
+                                    header('location: /SGRC/index.php?page=table');
+                                }
+                                else {
+                                    echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
+                                }
+
+                                $compteur = 0;
+                                
+                                
                                 break;
                             }
                         case "update table": {
@@ -571,7 +594,7 @@ if (isset($_SESSION["role"])) {
                 //recup de la liste des tables
                 $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
                 $statmt->execute();
-                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);;
+                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
 
                 //recup de la liste des boissons
                 $statmt3 = $pdo->prepare('SELECT * FROM plat INNER JOIN sous_categorie ON plat.id_sous_cat = sous_categorie.id_sous_cat WHERE id_cat != 1 ORDER BY vu ASC');
@@ -743,7 +766,7 @@ if (isset($_SESSION["role"])) {
                             case "carte_menu": {
                                 if (isset($_SESSION['id_m'])) {
                                     $id_m = $_SESSION['id_m'];
-                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat');
+                                    $statmt28 = $pdo->prepare('SELECT * FROM categorie_plat ORDER BY ordre_affichage_cat asc');
                                     $requete_carte = $pdo->prepare("SELECT P.id_plat, P.nom_plat, P.description, P.type_plat, S.nom_sous_cat, P.PU_carte from menu_contient_plat MP, plat P, sous_categorie S, menu M WHERE MP.id_menu=M.id_menu AND MP.id_plat=P.id_plat AND P.id_sous_cat = S.id_sous_cat AND P.vu=0 and MP.id_menu = :id_m ORDER BY S.ordre_aff_sous_cat asc;");
                                     $requete_carte->bindParam(':id_m', $id_m, PDO::PARAM_INT);
                                     $requete_carte->execute();
@@ -754,7 +777,7 @@ if (isset($_SESSION["role"])) {
                                     //$statmt29->bindParam(':idsouscat', $sous_cat, PDO::PARAM_INT);
                                     //$statmt29->execute();
                                     //$cat_plats = $statmt29->fetchAll(PDO::FETCH_ASSOC);
-                                    $statmt = $pdo->prepare('SELECT sc.nom_sous_cat, sc.id_sous_cat, sc.id_cat FROM sous_categorie sc INNER JOIN categorie_plat c ON sc.id_cat = c.id_cat');
+                                    $statmt = $pdo->prepare('SELECT sc.nom_sous_cat, sc.id_sous_cat, sc.id_cat FROM sous_categorie sc INNER JOIN categorie_plat c ON sc.id_cat = c.id_cat ORDER BY ordre_aff_sous_cat ASC');
                                     include "view/admin/produit/modifier/carte_menu.php";
                                 } else {
                                     include "view/admin/produit/menu.php";

@@ -9,3 +9,4 @@ menuBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
   sideMenu.style.display = "none";
 });
+
