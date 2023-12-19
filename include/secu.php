@@ -907,11 +907,27 @@ if (isset($_SESSION["role"])) {
                             try{
                                 $id_ticket = $_POST['id_ticket'];
                                 $id_plat = $_POST['id_plat'];
-                                $etat = "Demandé";
-                                $statmt = $pdo->prepare('UPDATE ligne_ticket SET Etat = "En cours" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat');
+                                $commentaire = $_POST['commentaire'];
+                                $etat = "Demandé"; 
+
+                                // Vérifier si le commentaire est vide
+                                if ($commentaire == "") {
+                                    $commentaireCondition = 'commentaire IS NULL';
+                                } else {
+                                    $commentaireCondition = 'commentaire = :commentaire';
+                                }
+
+                                $statmt = $pdo->prepare('UPDATE ligne_ticket SET Etat = "En cours" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition);
+                                
                                 $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
                                 $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
                                 $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+
+                                // Ne lier le paramètre que si le commentaire n'est pas vide
+                                if ($commentaire != "") {
+                                    $stmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                }
+
                                 $statmt->execute();
 
                             }
@@ -926,14 +942,30 @@ if (isset($_SESSION["role"])) {
                                 try{
                                     $id_ticket = $_POST['id_ticket'];
                                     $id_plat = $_POST['id_plat'];
-
+                                    $commentaire = $_POST['commentaire'];
                                     $etat = "En cours"; 
-                                    $statmt = $pdo->prepare('UPDATE ligne_ticket SET Etat ="Prêt" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat');
-                                    $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
-                                    $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
-                                    $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
-                                    $statmt->execute();
-    
+
+                                    // Vérifier si le commentaire est vide
+                                    if ($commentaire == "") {
+                                        $commentaireCondition = 'commentaire IS NULL';
+                                    } else {
+                                        $commentaireCondition = 'commentaire = :commentaire';
+                                    }
+
+                                    $sql = 'UPDATE ligne_ticket SET Etat = "Prêt" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND ' . $commentaireCondition;
+                                    $stmt = $pdo->prepare($sql);
+
+                                    $stmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                    $stmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                    $stmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+
+                                    // Ne lier le paramètre que si le commentaire n'est pas vide
+                                    if ($commentaire != "") {
+                                        $stmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                    }
+
+                                    $stmt->execute();
+
                                 }
                                 catch(PDOException $e){
                                     echo $e->getMessage();
