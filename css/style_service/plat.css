@@ -85,6 +85,14 @@ table {
   align-items: center;
 }
 
+table tbody tr td input{
+  padding: 5px;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 16px;
+}
+
 .tab-content table td input[type=number] {
   width: 40px;
   height: 40px;
@@ -261,12 +269,13 @@ td button{
 .ticket_de_caisse{
   background-color: var(--color-ticket);
   border-radius: 1rem;
-  width: 400px;
+  width: 800px;
+  /*width: 400px;*/
   float: right;
   right: 0px;
   top: 50%;
   transform: translate(-10%, -50);
-  position: fixed;
+  /*position: fixed;*/
   top: 60px;
   overflow-y: scroll;
   height: 80%;
@@ -304,4 +313,29 @@ td button{
   margin-right:auto;
   position: relative;
 }
+}
+
+/* Style au survol du bouton */
+input[type="submit"]:hover {
+  opacity: 0.9;
+}
+
+input[value="En Saisie"] {
+  background-color: #565656;
+}
+
+input[value="En cours"] {
+  background-color: #e2bc41;
+}
+
+input[value="Prêt"] {
+  background-color: #00de5d;
+}
+
+input[value="A servi"] {
+  background-color: #006ccb;
+}
+
+input[value="Servi"] {
+  background-color: #565656;
 }

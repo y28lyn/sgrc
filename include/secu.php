@@ -1277,6 +1277,78 @@ if (isset($_SESSION["role"])) {
                                 break;
                             }
 
+                        case "etatDemande": {
+                            try{
+                                $id_ticket = $_POST['id_ticket'];
+                                $id_plat = $_POST['id_plat'];
+                                $commentaire = $_POST['commentaire'];
+                                $etat = "En saisie"; 
+
+                                // Vérifier si le commentaire est vide
+                                if ($commentaire == "") {
+                                    $commentaireCondition = 'commentaire IS NULL';
+                                } else {
+                                    $commentaireCondition = 'commentaire = :commentaire';
+                                }
+                                
+                                $sql = 'UPDATE ligne_ticket SET Etat = "Demandé" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition;
+                                $statmt = $pdo->prepare($sql);
+                                
+                                $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+
+                                // Ne lier le paramètre que si le commentaire n'est pas vide
+                                if ($commentaire != "") {
+                                    $statmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                }
+
+                                $statmt->execute();
+
+                            }
+                            catch(PDOException $e){
+                                echo $e->getMessage();
+                            }
+                            
+                            break;
+                        }
+
+                        case "etatServi": {
+                            try{
+                                $id_ticket = $_POST['id_ticket'];
+                                $id_plat = $_POST['id_plat'];
+                                $commentaire = $_POST['commentaire'];
+                                $etat = "Prêt"; 
+
+                                // Vérifier si le commentaire est vide
+                                if ($commentaire == "") {
+                                    $commentaireCondition = 'commentaire IS NULL';
+                                } else {
+                                    $commentaireCondition = 'commentaire = :commentaire';
+                                }
+                                
+                                $sql = 'UPDATE ligne_ticket SET Etat = "Servi" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition;
+                                $statmt = $pdo->prepare($sql);
+                                
+                                $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+
+                                // Ne lier le paramètre que si le commentaire n'est pas vide
+                                if ($commentaire != "") {
+                                    $statmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                }
+
+                                $statmt->execute();
+
+                            }
+                            catch(PDOException $e){
+                                echo $e->getMessage();
+                            }
+                            
+                            break;
+                        }
+
                         default: {
                             }
                     }
