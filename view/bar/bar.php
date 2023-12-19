@@ -120,7 +120,8 @@ if ($_SESSION["role"] == "bar") {
 																<input type="hidden" name="action" value="etatEnCours">
 																<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-
+																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']?>">
+																<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																<input type="submit" value="En cours">
 															</form>
 														</td>
@@ -131,7 +132,8 @@ if ($_SESSION["role"] == "bar") {
 																	<input type="hidden" name="action" value="etatPret">
 																	<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																	<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-
+																	<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']; ?>">
+																	<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																	<input type="submit" value="Prêt">
 																</form>
 															</td>
