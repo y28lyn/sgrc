@@ -68,9 +68,6 @@
             $statmt17 = $pdo->prepare('SELECT DISTINCT ticket.id_ticket, plat.nom_plat, COUNT(nom_plat) AS quantite ,ligne_ticket.commentaire, (plat.PU_carte * COUNT(nom_plat)) as prix FROM ligne_ticket, plat, ticket, sous_categorie, categorie_plat WHERE ticket.id_ticket = :id_ticket and ticket.id_ticket = ligne_ticket.id_ticket and plat.id_plat=ligne_ticket.id_plat and plat.id_sous_cat = sous_categorie.id_sous_cat and sous_categorie.id_cat = categorie_plat.id_cat GROUP BY nom_plat ORDER BY ordre_affichage_cat, ordre_aff_sous_cat;');
             $statmt17->bindParam(':id_ticket', $idticket_caisse, PDO::PARAM_INT);
 
-
-
-
             //recup le prix total du ticket
             $statmt20 = $pdo->prepare('SELECT sum(plat.PU_carte) as TT FROM ligne_ticket, plat, ticket WHERE ligne_ticket.id_ticket = ticket.id_ticket AND ligne_ticket.id_plat = plat.id_plat AND ticket.id_ticket = :id_ticket ');
             $statmt20->bindParam(':id_ticket', $idticket_caisse, PDO::PARAM_INT);
@@ -106,7 +103,7 @@
         </table>
 
         <!-- Affichage du prix total pour ce ticket -->
-        <tr>Prix Total : <?php echo number_format($prixTT['TT'], 2); ?>€</tr>
+        <tr>Prix Total : <?php echo $prixMenu['PU'] * $ticketBar['nb_couvert'] + $prixTT['TT']; ?>€</tr>
 
         <!-- Formulaire pour payer le ticket -->
         <tr>

@@ -1,4 +1,8 @@
 <?php
+if (!isset($_SESSION)) {
+	session_start();
+}
+
 if ($_SESSION["role"] == "bar") {
 
 ?>
@@ -51,7 +55,7 @@ if ($_SESSION["role"] == "bar") {
 						<?php
 						foreach ($ticketsBar as $ticketBar) {
 						?>
-							<div class="ticket" id="load_ticket">
+							<div class="ticket" class="load_ticket">
 								<table>
 									<caption>
 										<?php
@@ -99,7 +103,7 @@ if ($_SESSION["role"] == "bar") {
 													<?php echo $commande['nom_plat']; ?>
 												</td>
 												<td>
-													<?php echo $commande['commentaires']; ?>
+													<?php echo $commande['commentaire']; ?>
 												</td>
 												<td>
 													<?php echo $commande['Etat']; ?>
@@ -120,7 +124,7 @@ if ($_SESSION["role"] == "bar") {
 																<input type="hidden" name="action" value="etatEnCours">
 																<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']?>">
+																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaire']?>">
 																<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																<input type="submit" value="En cours">
 															</form>
@@ -132,7 +136,7 @@ if ($_SESSION["role"] == "bar") {
 																	<input type="hidden" name="action" value="etatPret">
 																	<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																	<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-																	<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']; ?>">
+																	<input type="hidden" name="commentaire" value="<?php echo $commande['commentaire']; ?>">
 																	<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																	<input type="submit" value="Prêt">
 																</form>
@@ -150,7 +154,7 @@ if ($_SESSION["role"] == "bar") {
 									}
 									?>
 								</table>
-							</div>
+							</div>	
 						<?php
 						}
 						?>
@@ -198,6 +202,27 @@ if ($_SESSION["role"] == "bar") {
 	<!-- SCRIPT FONT AWESOME -->
 	<script src="https://kit.fontawesome.com/438cd94e6c.js" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function load_tickets() {
+		// Récupérer les nouveaux tickets sans recharger la page entière en AJAX
+			$.ajax({
+				url: "/SGRC/view/bar/load_ticket.php",
+				type: "GET",
+				data: {
+					ticketsBar: <?php echo json_encode($ticketsBar); ?>,
+					sqlQueries: <?php echo json_encode(array($statmt16, $statmt17)); ?>
+				}, // Passer les ticketsBar et les requêtes SQL via AJAX
+				success: function(data) {
+					// Mettre à jour seulement la partie nécessaire
+					$(".card_ticket").html(data);
+				}
+			});
+		}	
+
+		// Appeler la fonction toutes les 2 secondes
+		setInterval(load_tickets, 2000);
+
+	</script>
 	</body>
 
 	</html>
