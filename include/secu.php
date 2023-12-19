@@ -13,49 +13,52 @@ if (isset($_SESSION["role"])) {
                     //case gérant les ajouts/suppressions/modifications dans les différentes tables de la bdd
                     switch ($_POST['action']) {
                         case "ajouter table": {
-                                $id_t = htmlspecialchars($_POST['id_table']);
-                                $num_table = htmlspecialchars($_POST['numero_table']);
-                                $type_table = htmlspecialchars($_POST['type_table']);
-                                $vu_table = htmlspecialchars($_POST['vu']);
-
-                                $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
-                                $statmt->execute();
-                                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
-                                
-                                $compteur = 0;
-                                
-                                foreach ($tables as $table){
-                                    $tableNUM = $table['numero_table'];
-                                    if ( $tableNUM === $num_table) {
-                                        $compteur += 1;
-                                    }
-                                }
-
-                                if($compteur === 0){
-                                    $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
-                                    header('location: /SGRC/index.php?page=table');
-                                }
-                                else {
-                                    echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
-                                }
-
-                                $compteur = 0;
-                                
-                                
-                                break;
-                            }
-                        case "update table": {
-                                $id_t = htmlspecialchars($_POST['id_table']);
-                                $num_table = htmlspecialchars($_POST['numero_table']);
-                                $type_table = htmlspecialchars($_POST['type_table']);
-                                $vu_tb = htmlspecialchars($_POST['vu']);
-                                $vu_tb = ($vu_tb == 'Visible') ? '0' : '1';
-                                // Variable de id_menu en GET
-                                $reqUP = "UPDATE sgr_table SET numero_table='$num_table',type_table='$type_table',vu='$vu_tb' WHERE id_table ='$id_t'";
-                                $resulat = mysqli_query($link, $reqUP);
+                            $id_t = htmlspecialchars($_POST['id_table']);
+                            $num_table = htmlspecialchars($_POST['numero_table']);
+                            $type_table = htmlspecialchars($_POST['type_table']);
+                            $vu_table = htmlspecialchars($_POST['vu']);
+                        
+                            // Vérification si le numéro de table existe déjà
+                            $checkQuery = "SELECT id_table FROM sgr_table WHERE numero_table = ?";
+                            $checkStatement = $pdo->prepare($checkQuery);
+                            $checkStatement->execute([$num_table]);
+                            $existingTable = $checkStatement->fetch();
+                        
+                            if (!$existingTable) {
+                                $insertQuery = "INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUES (NULL, ?, ?, ?)";
+                                $insertStatement = $pdo->prepare($insertQuery);
+                                $insertStatement->execute([$num_table, $type_table, $vu_table]);
                                 header('location: /SGRC/index.php?page=table');
-                                break;
+                            } else {
+                                echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
                             }
+                            break;
+                        }
+ 
+                        case "update table": {
+                            $id_t = htmlspecialchars($_POST['id_table']);
+                            $num_table = htmlspecialchars($_POST['numero_table']);
+                            $type_table = htmlspecialchars($_POST['type_table']);
+                            $vu_tb = htmlspecialchars($_POST['vu']);
+                            $vu_tb = ($vu_tb == 'Visible') ? '0' : '1';
+                        
+                            // Vérification si le numéro de table existe déjà
+                            $checkQuery = "SELECT id_table FROM sgr_table WHERE numero_table = ? AND id_table <> ?";
+                            $checkStatement = $pdo->prepare($checkQuery);
+                            $checkStatement->execute([$num_table, $id_t]);
+                            $existingTable = $checkStatement->fetch();
+                        
+                            if (!$existingTable) {
+                                $updateQuery = "UPDATE sgr_table SET numero_table=?, type_table=?, vu=? WHERE id_table=?";
+                                $updateStatement = $pdo->prepare($updateQuery);
+                                $updateStatement->execute([$num_table, $type_table, $vu_tb, $id_t]);
+                                header('location: /SGRC/index.php?page=table');
+                            } else {
+                                $_POST["id_t"] = $id_t;
+                                echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
+                            }
+                            break;
+                        }
 
                         case "vis table": {
                                 if (isset($_POST['id_table'])) {
