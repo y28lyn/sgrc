@@ -916,8 +916,9 @@ if (isset($_SESSION["role"])) {
                                 } else {
                                     $commentaireCondition = 'commentaire = :commentaire';
                                 }
-
-                                $statmt = $pdo->prepare('UPDATE ligne_ticket SET Etat = "En cours" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition);
+                                
+                                $sql = 'UPDATE ligne_ticket SET Etat = "En cours" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition;
+                                $statmt = $pdo->prepare($sql);
                                 
                                 $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
                                 $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
@@ -925,7 +926,7 @@ if (isset($_SESSION["role"])) {
 
                                 // Ne lier le paramètre que si le commentaire n'est pas vide
                                 if ($commentaire != "") {
-                                    $stmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                    $statmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
                                 }
 
                                 $statmt->execute();
