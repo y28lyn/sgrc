@@ -199,12 +199,25 @@ if ($_SESSION["role"] == "cuisine") {
 	<script src="https://kit.fontawesome.com/438cd94e6c.js" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
-		// Recharger la page avce intervale
-		setInterval('load_ticket()', 2000);
+		function load_tickets() {
+		// Récupérer les nouveaux tickets sans recharger la page entière en AJAX
+			$.ajax({
+				url: "/SGRC/view/cuisine/load_ticket.php",
+				type: "GET",
+				data: {
+					tickets: <?php echo json_encode($tickets); ?>,
+					sqlQueries: <?php echo json_encode(array($statmt16, $statmt17)); ?>
+				}, // Passer les ticketsBar et les requêtes SQL via AJAX
+				success: function(data) {
+					// Mettre à jour seulement la partie nécessaire
+					$(".card_ticket").html(data);
+				}
+			});
+		}	
 
-		function load_ticket() {
-			location.reload();
-		};
+		// Appeler la fonction toutes les 2 secondes
+		setInterval(load_tickets, 2000);
+
 	</script>
 	</body>
 

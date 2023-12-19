@@ -2,8 +2,7 @@
 if (!isset($_SESSION)) {
 	session_start();
 }
-?>
-<?php
+
 if ($_SESSION["role"] == "caisse") {
 	//ini_set('display_errors', 'off');  // Bloque les erreur php
 

@@ -146,6 +146,7 @@ if ($_SESSION["role"] == "service") {
                     $commentaire = $ligne['commentaire'];
                     $id_ticket = $ligne['id_ticket'];
                     $id_ligne_ticket = $ligne['id_ligne_ticket'];
+                    $etat = $ligne['Etat'];
                     // Si le plat est déjà dans le tableau, incrémente simplement la quantité
                     if (isset($platsConsolides[$id_plat]) && $commentaire==null) {
                         $platsConsolides[$id_plat]['quantite']+= 1;
@@ -157,6 +158,7 @@ if ($_SESSION["role"] == "service") {
                                 'id_plat' => $id_plat,
                                 'nom_plat' => $nomDuPlat,
                                 'id_ticket'=> $id_ticket,
+                                'Etat"=>' => $etat,
                                 'commentaire' => $commentaire,
                                 'quantite' => 1
                                 );      
@@ -167,6 +169,7 @@ if ($_SESSION["role"] == "service") {
                             'id_plat' => $id_plat,
                             'nom_plat' => $nomDuPlat,
                             'id_ticket'=> $id_ticket,
+                            'Etat' => $etat,
                             'commentaire' => $commentaire,
                             'quantite' => 1
                             ); 
@@ -221,6 +224,7 @@ if ($_SESSION["role"] == "service") {
                                 </td>
                                 <!--Affichage form commentaire-->
                                 <td>
+                                
                                 <form method="POST">
                                     <input type="text" name="commentaire" size="5" value="<?php echo $plat['commentaire'];?>">
                                 
@@ -260,7 +264,7 @@ if ($_SESSION["role"] == "service") {
                             
 
                             <!--Affichage nom du palt-->
-                            <td class="titre"">
+                            <td class="titre">
                                 <?php echo $plat['nom_plat']; ?>
                             </td>
 
@@ -268,6 +272,82 @@ if ($_SESSION["role"] == "service") {
                             <td>
                                 <?php echo $plat['quantite']; ?>
                             </td>
+                            <td>
+                                <?php echo $plat['Etat']; ?>
+                            </td>
+                                <?php
+                                    if ($plat['Etat'] == "En saisie") {
+                                    ?>
+                                        <td>
+                                            <form method="POST">
+                                                <input type="hidden" name="action" value="etatDemande">
+                                                <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                                <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                                <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']?>">
+                                                <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                                <input type="submit" value="Demander">
+                                            </form>
+                                        </td>	
+                                        <?php
+                                    } else {
+
+                                        if ($plat['Etat'] == "Demandé") { ?>
+                                            <td>
+                                                <form method="POST">
+                                                    <input type="hidden" name="action" value="etatEnCours">
+                                                    <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                                    <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                                    <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']?>">
+                                                    <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                                    <input type="submit" value="En cours">
+                                                </form>
+                                            </td>
+                                            <?php } else {
+                                                if ($plat['Etat'] == "Prêt") { ?>
+                                                    <td>
+                                                        <form method="POST">
+                                                            <input type="hidden" name="action" value="etatServi">
+                                                            <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                                            <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                                            <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
+                                                            <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                                            <input type="submit" value="Servi">
+                                                        </form>
+                                                    </td>
+                                                <?php } else{
+                                                    if ($plat['Etat'] == "Prêt") { ?>
+                                                        <td>
+                                                            <form method="POST">
+                                                                <input type="hidden" name="action" value="etatServi">
+                                                                <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                                                <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                                                <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
+                                                                <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                                                <input type="submit" value="Servi">
+                                                            </form>
+                                                        </td>
+                                                <?php } else{
+                                                    if ($plat['Etat'] == "Servi") { ?>
+                                                        <td>
+                                                            <form method="POST">
+                                                                <input type="hidden" name="action" value="etatPaye">
+                                                                <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                                                <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                                                <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
+                                                                <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                                                <input type="submit" value="Payé">
+                                                            </form>
+                                                        </td>
+                                             <?php  } 
+                                             else { ?>
+                                                <td>
+                                                    <p>En attente</p>
+                                                </td>
+                                             <?php }
+                                                }
+                                            }
+                                        }
+                                    } ?>
 
                             <td>
                                 <form method="POST">
