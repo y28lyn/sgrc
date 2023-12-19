@@ -197,7 +197,7 @@ if ($_SESSION["role"] == "admin") {
                         $row = $statm->fetch();
                         ?>
                         <div class="profil-photot">
-                            <!-- <img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt=""> -->
+                            <!-- <img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt=""> -->
                             <!-- <img src="/SGRC/image/img/source/profil.jpg" alt="Profil" /> -->
                         </div>
                     </div>

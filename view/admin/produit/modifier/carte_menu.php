@@ -123,7 +123,7 @@ if ($_SESSION["role"] == "admin") {
                 $row = $statm->fetch();
                 ?>
                 <div class="profil-photot">
-                    <!-- <img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt=""> -->
+                    <!-- <img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt=""> -->
                     <!-- <img src="/SGRC/image/img/source/profil.jpg" alt="Profil" /> -->
                 </div>
             </div>
@@ -143,16 +143,43 @@ if ($_SESSION["role"] == "admin") {
             tabContents.forEach(tabContent => {
                 tabContent.style.display = 'none';
             });
-
             // Afficher le contenu de l'onglet sélectionné
             const tabContentId = event.target.id.replace('tab-button-', 'tab-content-');
             document.getElementById(tabContentId).style.display = 'flex';
+
+            // Supprimer la classe active de tous les boutons d'onglet
+            tabButtons.forEach(tabButton => {
+                tabButton.classList.remove('active');
+            });
+
+            // Ajouter la classe active au bouton d'onglet sélectionné
+            event.target.classList.add('active');
         }
+
 
         // Ajouter un gestionnaire d'événement de clic sur chaque bouton d'onglet
         tabButtons.forEach(tabButton => {
             tabButton.addEventListener('click', handleTabButtonClick);
         });  
+
+        
+
+        const subTabButtons = document.querySelectorAll('.sub-tab-button');
+        const subTabContents = document.querySelectorAll('.sub-tab-content');
+
+        function handleSubTabButtonClick(event) {
+            // Si le bouton est active alors remove active sinon met active
+            if (event.target.classList.contains('active')) {
+                event.target.classList.remove('active');
+            } else {
+                // Ajouter la classe active au bouton d'onglet sélectionné
+                event.target.classList.add('active');
+            }            
+        }
+        //Ajouter un gestionnaire d'événement de clic sur chaque sous bouton d'onglet
+        subTabButtons.forEach(subTabButton => {
+            subTabButton.addEventListener('click', handleSubTabButtonClick);
+        });
 
         // Selection par défaut du premier onglet 
         const affichageCuisine = document.getElementById("tab-button-1");

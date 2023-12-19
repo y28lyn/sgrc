@@ -210,7 +210,7 @@ if ($_SESSION["role"] == "service") {
                             if(isset($plat['id_ligne_ticket'])){?>
 
                                 <!--Affichage nom du palt-->
-                                <td class="titre" style="color:black">
+                                <td class="titre">
                                     <?php echo $plat['nom_plat']; ?>
                                     
                                 </td>
@@ -260,7 +260,7 @@ if ($_SESSION["role"] == "service") {
                             
 
                             <!--Affichage nom du palt-->
-                            <td class="titre" style="color:black">
+                            <td class="titre"">
                                 <?php echo $plat['nom_plat']; ?>
                             </td>
 
@@ -357,11 +357,19 @@ if ($_SESSION["role"] == "service") {
             tabContents.forEach(tabContent => {
                 tabContent.style.display = 'none';
             });
-
             // Afficher le contenu de l'onglet sélectionné
             const tabContentId = event.target.id.replace('tab-button-', 'tab-content-');
             document.getElementById(tabContentId).style.display = 'flex';
+
+            // Supprimer la classe active de tous les boutons d'onglet
+            tabButtons.forEach(tabButton => {
+                tabButton.classList.remove('active');
+            });
+
+            // Ajouter la classe active au bouton d'onglet sélectionné
+            event.target.classList.add('active');
         }
+
 
         // Ajouter un gestionnaire d'événement de clic sur chaque bouton d'onglet
         tabButtons.forEach(tabButton => {
@@ -369,11 +377,29 @@ if ($_SESSION["role"] == "service") {
         });  
 
         
-    </script>
-    <script>
+
+        const subTabButtons = document.querySelectorAll('.sub-tab-button');
+        const subTabContents = document.querySelectorAll('.sub-tab-content');
+
+        function handleSubTabButtonClick(event) {
+            // Si le bouton est active alors remove active sinon met active
+            if (event.target.classList.contains('active')) {
+                event.target.classList.remove('active');
+            } else {
+                // Ajouter la classe active au bouton d'onglet sélectionné
+                event.target.classList.add('active');
+            }            
+        }
+        //Ajouter un gestionnaire d'événement de clic sur chaque sous bouton d'onglet
+        subTabButtons.forEach(subTabButton => {
+            subTabButton.addEventListener('click', handleSubTabButtonClick);
+        });
+
+        // Selection par défaut du premier onglet 
         const affichageCuisine = document.getElementById("tab-button-1");
         affichageCuisine.click();
-    </script>  
+        
+    </script>
 
 
 </body>
