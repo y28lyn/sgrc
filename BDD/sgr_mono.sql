@@ -24,7 +24,7 @@ CREATE TABLE `ligne_ticket` (
   `id_ticket` int(11) NOT NULL,
   `id_plat` int(11) NOT NULL,
   `commentaire` varchar(255) DEFAULT NULL,
-  `Etat` enum('Demandé', 'En cours', 'Prêt', 'Servi') DEFAULT 'Demandé'
+  `Etat` enum('En Saisie','Demandé', 'En cours', 'Prêt', 'Servi') DEFAULT 'En Saisie'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `menu` (
