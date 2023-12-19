@@ -78,20 +78,19 @@ if ($_SESSION["role"] == "admin") {
                 </div>
             </aside>
             <!-------------Fin ASIDE  ----------------->
-            <main>
-                <h1>Les utilisateur</h1>
+            <main class="main-user">
+                <h1>Utilisateurs</h1>
 
                 <div class="Utilisateur">
                     <!-- Table -->
                     <table class="table-grid">
                         <caption>
-                            Les utilisateur
+                            Utilisateurs
                         </caption>
                         <thead>
                             <tr>
                                 <th>Login</th>
                                 <th>Rôle</th>
-                                <th>Mot de passe</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -107,25 +106,29 @@ if ($_SESSION["role"] == "admin") {
                                     <td>
                                         <?php echo $user['role']; ?>
                                     </td>
-                                    <td>
-                                        <?php echo $user['mdp']; ?>
-                                    </td>
-                                    <td>
-                                        <!-- Formulaire pour modifier l'utilisateur -->
-                                        <form action="?page=modif_utilisateur" method="post">
-                                            <input type="hidden" name="id_user" value="<?php echo $user['id_user']; ?>">
-                                            <button type="submit" value="modifier" class="btn btn-primary"><img class="icon_size" src="image\icone\pen-to-square.svg" alt="Icone Edit Categorie">
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <!-- Formulaire pour supprimer l'utilisateur -->
-                                        <form method="post" action="">
-                                            <input type="hidden" name="action" value="suppr_utilisateur">
-                                            <input type="hidden" name="id_u" value="<?php echo $user['id_user']; ?>">
-                                            <button type="submit" onclick="return confirm ('êtes-vous sûr de vouloir supprimer ?')"><img class="icon_size" src="image\icone\trash.svg" alt="Icone Delete Categorie"></button>
-                                        </form>
-                                    </td>
 
+                                    <td>
+                                        <table class="test">
+                                            <tr>
+                                                <td>
+                                                    <!-- Formulaire pour modifier l'utilisateur -->
+                                                    <form action="?page=modif_utilisateur" method="post">
+                                                        <input type="hidden" name="id_user" value="<?php echo $user['id_user']; ?>">
+                                                        <button type="submit" value="modifier" class="btn btn-primary"><img class="icon_size" src="image\icone\pen-to-square.svg" alt="Icone Edit Categorie">
+                                                    </form>
+                                                </td>
+
+                                                <td>
+                                                    <!-- Formulaire pour supprimer l'utilisateur -->
+                                                    <form method="post" action="">
+                                                        <input type="hidden" name="action" value="suppr_utilisateur">
+                                                        <input type="hidden" name="id_u" value="<?php echo $user['id_user']; ?>">
+                                                        <button type="submit" onclick="return confirm ('êtes-vous sûr de vouloir supprimer ?')"><img class="icon_size" src="image\icone\trash.svg" alt="Icone Delete Categorie"></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                 </tr>
                             </tbody>
                         <?php

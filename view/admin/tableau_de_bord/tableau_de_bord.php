@@ -215,7 +215,7 @@ if ($_SESSION["role"] == "admin") {
                     <!-- Modifiez votre balise img pour appeler la fonction handleImageClick lors du clic -->
                     <form id="qrForm">
                         <label for="ip">Adresse IP : </label>
-                        <input type="text" id="ip" value="<?php echo $_SERVER["SERVER_ADDR"] ?>" name="ip" >
+                        <input type="text" id="ip" value="<?php echo $_SERVER["SERVER_NAME"] ?>" name="ip" readonly>
                         <img class="big_icon_size" src="image\icone\qrcode.svg" alt="Générer le QR code" onclick="handleImageClick()">
                     </form>
                     <div id="qrcode"></div>
@@ -232,7 +232,7 @@ if ($_SESSION["role"] == "admin") {
                         function generateQRCode(ip) {
                             document.getElementById('qrcode').innerHTML = ""; // Vide la div qrcode
                             var qrCode = new QRCode(document.getElementById("qrcode"), {
-                                text: "http://www.brodet.fr/SGRC/", // Mettez le chemin vers votre page de connexion ici
+                                text: "https://<?php echo $_SERVER["SERVER_NAME"] ?>", // Mettez le chemin vers votre page de connexion ici
                                 width: 256,
                                 height: 256
                             });

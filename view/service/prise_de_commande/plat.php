@@ -81,8 +81,6 @@ if ($_SESSION["role"] == "service") {
                     } ?>
                 </div>
                 <?php
-                $statmt28->execute();
-                $categories = $statmt28->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($categories as $categorie){
                 
                     $cat = $categorie['id_cat'];
@@ -100,9 +98,11 @@ if ($_SESSION["role"] == "service") {
                                 $statmt30->execute();
                                 $plats = $statmt30->fetchAll(PDO::FETCH_ASSOC);
                                 echo '<table border="0">';
+                                echo '<tr class="nomColonne"><td> Nom du plat </p></td><td> Prix </td><td> Quantité </td></tr>';
                                 foreach($plats as $plat){
                                     $id_p = $plat['id_plat'];
-                                    echo '<tr><td>' . $plat['nom_plat'] . '</td><td>' . $plat['description'] . '</td>';
+                                    echo '<tr><td>' . $plat['nom_plat'] . '<br> <p class="descPlat">' .'Desc : '. $plat['description'] . ' </p></td>';
+                                    echo '<td>' . $plat['PU_carte'] . '€</td>';
                                     echo '<td>';
                                     // boutons +
                                     echo '<form method="POST">';
@@ -210,8 +210,9 @@ if ($_SESSION["role"] == "service") {
                             if(isset($plat['id_ligne_ticket'])){?>
 
                                 <!--Affichage nom du palt-->
-                                <td class="titre" style="color:black">
+                                <td class="titre">
                                     <?php echo $plat['nom_plat']; ?>
+                                    
                                 </td>
 
                                 <!--Affichez quantite du palt-->
@@ -230,7 +231,7 @@ if ($_SESSION["role"] == "service") {
                                 </td>
                                 <!--Affichage bouton validation form commentaire-->
                                 <td>
-                                        <button type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
+                                        <button class="logo" type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
                                     </form>
                                 </td>
 
@@ -238,7 +239,7 @@ if ($_SESSION["role"] == "service") {
                                 <!--Form et bouton suppression d'un plat-->
                                 <td>
                                     <form method="POST">
-                                    <button type="submit"> <i class="fa-solid fa-trash-can"></i></button>
+                                    <button class="logo" type="submit"> <i class="fa-solid fa-trash-can"></i></button>
                                         <input type="hidden" name="action" value="supprimer_ligne_ticket">
                                         <input type="hidden" name="id_ligne_ticket" value="<?php echo $plat['id_ligne_ticket']; ?>">
                                     </form>
@@ -259,7 +260,7 @@ if ($_SESSION["role"] == "service") {
                             
 
                             <!--Affichage nom du palt-->
-                            <td class="titre" style="color:black">
+                            <td class="titre"">
                                 <?php echo $plat['nom_plat']; ?>
                             </td>
 
@@ -356,11 +357,19 @@ if ($_SESSION["role"] == "service") {
             tabContents.forEach(tabContent => {
                 tabContent.style.display = 'none';
             });
-
             // Afficher le contenu de l'onglet sélectionné
             const tabContentId = event.target.id.replace('tab-button-', 'tab-content-');
             document.getElementById(tabContentId).style.display = 'flex';
+
+            // Supprimer la classe active de tous les boutons d'onglet
+            tabButtons.forEach(tabButton => {
+                tabButton.classList.remove('active');
+            });
+
+            // Ajouter la classe active au bouton d'onglet sélectionné
+            event.target.classList.add('active');
         }
+
 
         // Ajouter un gestionnaire d'événement de clic sur chaque bouton d'onglet
         tabButtons.forEach(tabButton => {
@@ -368,11 +377,29 @@ if ($_SESSION["role"] == "service") {
         });  
 
         
-    </script>
-    <script>
+
+        const subTabButtons = document.querySelectorAll('.sub-tab-button');
+        const subTabContents = document.querySelectorAll('.sub-tab-content');
+
+        function handleSubTabButtonClick(event) {
+            // Si le bouton est active alors remove active sinon met active
+            if (event.target.classList.contains('active')) {
+                event.target.classList.remove('active');
+            } else {
+                // Ajouter la classe active au bouton d'onglet sélectionné
+                event.target.classList.add('active');
+            }            
+        }
+        //Ajouter un gestionnaire d'événement de clic sur chaque sous bouton d'onglet
+        subTabButtons.forEach(subTabButton => {
+            subTabButton.addEventListener('click', handleSubTabButtonClick);
+        });
+
+        // Selection par défaut du premier onglet 
         const affichageCuisine = document.getElementById("tab-button-1");
         affichageCuisine.click();
-    </script>  
+        
+    </script>
 
 
 </body>

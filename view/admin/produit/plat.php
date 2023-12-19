@@ -1,11 +1,12 @@
 <?php
-if(!isset($_SESSION)){
+if (!isset($_SESSION)) {
     session_start();
 }
-if($_SESSION["role"] == "admin"){
+if ($_SESSION["role"] == "admin") {
 ?>
     <!DOCTYPE html>
     <html lang="fr">
+
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,10 +17,11 @@ if($_SESSION["role"] == "admin"){
         <link rel="stylesheet" href="/SGRC/css/style_admin/tableau_de_bord/tableau_de_bord.css">
         <link rel="stylesheet" href="/SGRC/css/common.css" />
     </head>
+
     <body>
         <!--Container -->
         <div class="container">
-        <aside>
+            <aside>
                 <!-- MENU (logo & titre & bouton fermer) -->
                 <div class="top">
                     <div class="logo">
@@ -103,7 +105,7 @@ if($_SESSION["role"] == "admin"){
                                     <td>
                                         <table>
                                             <tr>
-                                                
+
                                                 <td>
                                                     <!-- Modifier -->
                                                     <form method="post" action="?page=modif_plat">
@@ -112,13 +114,23 @@ if($_SESSION["role"] == "admin"){
                                                     </form>
                                                 </td>
                                                 <td>
-                                                    <!--mcacher-->
+                                                    <!-- Visible/Invisible-->
+                                                <td>
                                                     <form method="post" action="">
-                                                        <input type="hidden" name="action" value="invis plat">
+                                                        <input type="hidden" name="action" value="vis plat">
                                                         <input type="hidden" name="id_b" value="<?php echo $plat['id_plat']; ?>">
-                                                        <button type="submit" onclick="return confirm ('êtes-vous sûr de vouloir cacher ')">
-                                                            cacher<!--<img class="icon_size" src="image\icone\trash.svg" alt="Icone Delete Categorie">  a changer par un oeil fermé-->
-                                                        </button>
+                                                        <button id="visibility-toggle" type="submit" onclick="return confirm ('Êtes-vous sûr de vouloir la cacher ? ')">
+                                                            <?php
+                                                            if ($plat['vu'] == '0') {                                                                
+                                                                echo '<img class="icon_size" src="image\icone\eye.svg" alt="Afficher">';
+                                                                $visible = 1;
+                                                            } else {
+                                                                echo '<img class="icon_size" src="image\icone\eye-slash.svg" alt="Cacher">';
+                                                                $visible = 0;
+                                                            }
+                                                            ?>
+                                                            <input type="hidden" name="visibilite" value="<?php echo $visible; ?>">
+                                                        </button>                                                        
                                                     </form>
                                                 </td>
                                                 <td>
@@ -160,34 +172,49 @@ if($_SESSION["role"] == "admin"){
                     </div>
                     <div class="profil">
                         <div class="info">
-                        <br>
-                        <p style="text-transform: uppercase;"><b><?php echo $_SESSION['role'] ?></b></p>
-                        <!-- <small class="text-muted">Admin</small> -->
+                            <br>
+                            <p style="text-transform: uppercase;"><b><?php echo $_SESSION['role'] ?></b></p>
+                            <!-- <small class="text-muted">Admin</small> -->
                         </div>
                         <?php
-                        $sql_req="SELECT * FROM user WHERE id_user = ".$_SESSION['id_user'];
-                        $statm=$pdo->prepare($sql_req);
+                        $sql_req = "SELECT * FROM user WHERE id_user = " . $_SESSION['id_user'];
+                        $statm = $pdo->prepare($sql_req);
                         $statm->execute();
                         $row  = $statm->fetch();
                         ?>
                         <div class="profil-photot">
-                            <!-- <img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt=""> -->
+                            <!-- <img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt=""> -->
                             <!-- <img src="/SGRC/image/img/source/profil.jpg" alt="Profil" /> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-         <!-- Script Dark Mode -->
-         <script src="/SGRC/js/source/dark_mode.js"></script>
+        <!-- Script Dark Mode -->
+        <script src="/SGRC/js/source/dark_mode.js"></script>
         <!-- Script Menu -->
         <script src="/SGRC/js/source/menu.js"></script>
         <!-- SCRIPT FONT AWESOME -->
-        <script src="https://kit.fontawesome.com/438cd94e6c.js" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/438cd94e6c.js" crossorigin="anonymous"></script>*
+
+        <script>
+            document.getElementById('visibility-toggle').addEventListener('click', function() {
+                var image = this.querySelector('img');
+                if (image.alt === 'Cacher') {
+                    image.src = "image\\icone\\eye.svg";
+                    image.alt = "Afficher";
+                } else {
+                    image.src = "image\\icone\\eye-slash.svg";
+                    image.alt = "Cacher";
+                }
+            });
+        </script>
+
     </body>
+
     </html>
-    <?php
-}else {
+<?php
+} else {
     echo ("vous n'avez pas le droit d'être là");
     header("Location:../../../index.php");
     exit();

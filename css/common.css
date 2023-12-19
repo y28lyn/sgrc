@@ -23,6 +23,9 @@
   --card-padding: 1.8rem;
   --padding-1: 1.2rem;
   --box-shadow: 0 2rem 3rem var(--color-light);
+
+  --color-cartemenu-light:#ffffff;
+  --color-cartemenu-dark:#dddcdc;
 }
 
 /* --------------- DARK THEME VARIABLE --------------- */
@@ -35,6 +38,9 @@
   --box-shadow: 0 2rem 3rem var(--color-light);
   --color-scroll: #677483;
   --color-ticket: #444444;
+
+  --color-cartemenu-light:#444444;
+  --color-cartemenu-dark:#2f363c;
 }
 * {
   margin: 0;

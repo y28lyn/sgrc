@@ -123,15 +123,26 @@ if ($_SESSION["role"] == "admin") {
                                                     </form>
                                                 </td>
                                                 <td>
-                                                    <!--mcacher-->
+                                                        <!-- Visible/Invisible-->
+                                                <td>
                                                     <form method="post" action="">
-                                                        <input type="hidden" name="action" value="invis boisson">
+                                                        <input type="hidden" name="action" value="vis boisson">
                                                         <input type="hidden" name="id_b" value="<?php echo $boisson['id_plat']; ?>">
-                                                        <button type="submit" onclick="return confirm ('êtes-vous sûr de vouloir cacher ')">
-                                                            cacher<!--<img class="icon_size" src="image\icone\trash.svg" alt="Icone Delete Categorie">  a changer par un oeil fermé-->
-                                                        </button>
+                                                        <button id="visibility-toggle" type="submit" onclick="return confirm ('Êtes-vous sûr de vouloir la cacher ? ')">
+                                                            <?php
+                                                            if ($boisson['vu'] == '0') {                                                                
+                                                                echo '<img class="icon_size" src="image\icone\eye.svg" alt="Afficher">';
+                                                                $visible = 1;
+                                                            } else {
+                                                                echo '<img class="icon_size" src="image\icone\eye-slash.svg" alt="Cacher">';
+                                                                $visible = 0;
+                                                            }
+                                                            ?>
+                                                            <input type="hidden" name="visibilite" value="<?php echo $visible; ?>">
+                                                        </button>                                                        
                                                     </form>
                                                 </td>
+
                                                 <td>
                                                     <!-- Supprimer -->
                                                     <form method="post" action="">
@@ -186,7 +197,7 @@ if ($_SESSION["role"] == "admin") {
                         $row = $statm->fetch();
                         ?>
                         <div class="profil-photot">
-                            <!-- <img src="/SGRC/php/images/<?php echo $row['image']; ?>" alt=""> -->
+                            <!-- <img src="/SGRC/php/image/profils/<?php echo $row['image']; ?>" alt=""> -->
                             <!-- <img src="/SGRC/image/img/source/profil.jpg" alt="Profil" /> -->
                         </div>
                     </div>
