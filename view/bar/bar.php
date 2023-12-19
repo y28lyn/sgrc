@@ -113,10 +113,10 @@ if ($_SESSION["role"] == "bar") {
 												if ($commande['Etat'] == "En saisie") {
 												?>
 													<td>
-														En Attente de Validation
+														<input class="etatEnAttente" type="submit" value="En Attente">
 													</td>	
 													<?php
-												} else {
+												} else {	
 
 													if ($commande['Etat'] == "Demandé") { ?>
 														<td>
