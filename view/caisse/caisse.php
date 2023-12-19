@@ -103,7 +103,7 @@ if ($_SESSION["role"] == "caisse") {
 								<thead>
 									<tr>
 										<th>Quantit&eacute;</th>
-										<th>Description</th>
+										<th>Nom produit</th>
 										<!-- <th>Nom du Produit</th> -->
 										<th>Prix</th>
 									</tr>
@@ -196,17 +196,21 @@ if ($_SESSION["role"] == "caisse") {
 
 		<script>
 			function load_tickets() {
-				//Récupérer les nouveaux tickets sans recharger la page entière en ajax
+    		// Récupérer les nouveaux tickets sans recharger la page entière en AJAX
 				$.ajax({
-					url: "/SGRC/view/caisse/load_tickets.php",
+					url: "/SGRC/view/caisse/load_ticket.php",
 					type: "GET",
+					data: {
+						ticketsBar: <?php echo json_encode($ticketsBar); ?>,
+						sqlQueries: <?php echo json_encode(array($statmt16, $statmt185, $statmt17, $statmt20)); ?>
+					}, // Passer les ticketsBar et les requêtes SQL via AJAX
 					success: function(data) {
 						// Mettre à jour seulement la partie nécessaire
 						$(".card_ticket").html(data);
 					}
 				});
 			}	
-
+	
 			// Appeler la fonction toutes les 2 secondes
 			setInterval(load_tickets, 2000);
 
