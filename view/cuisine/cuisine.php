@@ -33,7 +33,7 @@ if ($_SESSION["role"] == "cuisine") {
 				<div class="sidebar">
 					<!-- Ticket -->
 					<a href="#" class="active">
-					<img class="icon_size_sidebar" src="image\icone\ticket.svg" alt="Icone Ticket">
+						<img class="icon_size_sidebar" src="image\icone\ticket.svg" alt="Icone Ticket">
 						<h3>Ticket</h3>
 					</a>
 					<!-- Deconnexion-->
@@ -44,72 +44,116 @@ if ($_SESSION["role"] == "cuisine") {
 				</div>
 			</aside>
 			<!-------------Fin ASIDE  ----------------->
-		<main>
-			<h1>Voir les commande passées</h1>
-			<div class="commander">
-				<div class="card_ticket">
+			<main>
+				<h1>Voir les commande passées</h1>
+				<div class="commander">
+					<div class="card_ticket">
 						<?php
 						foreach ($tickets as $ticket) {
 						?>
-									<div class="ticket" id="load_ticket">
+							<div class="ticket" id="load_ticket">
 
 
-										<table>
-											<caption>
+								<table>
+									<caption>
+										<?php
+										echo "Table n° :" . "\n" . $ticket['numero_table'] . '<br/>';
+										echo "N° Ticket : #";
+										$numTicket = $ticket['id_ticket'];
+										while (strlen($numTicket) < 3) {
+											$numTicket = '0' . $numTicket;
+										}
+										echo $numTicket . '<br>';
+										$status = "";
+										if ($ticket['statut'] == 'PAY') {
+											$status = "<p class='success'>PAY</p>";
+										} elseif ($ticket['statut'] == 'VAL') {
+											$status = "<p class='warning'>VALIDE</p>";
+										} else {
+											$status = "<p class='danger'>SAISIE</p>";
+										}
+										echo "statut : " . $status;
+										?>
+									</caption>
+									<thead>
+										<tr>
+											<th>Quantit&eacute;</th>
+											<th>Nom du Plat</th>
+											<th>Commentaires</th>
+											<th>Etat</th>
+											<th>Action</th>
+										</tr>
+									</thead>
+
+									<?php
+									$u = $ticket['id_ticket'];
+									$statmt17->execute();
+									$commandes = $statmt17->fetchAll();
+									foreach ($commandes as $commande) {
+									?>
+										<tbody>
+											<tr>
+												<td>
+													<?php echo $commande['quantite']; ?>
+												</td>
+												<td>
+													<?php echo $commande['nom_plat']; ?>
+												</td>
+												<td>
+													<?php echo $commande['commentaires']; ?>
+												</td>
+												<td>
+													<?php echo $commande['Etat']; ?>
+												</td>
 												<?php
-												echo "Table n° :" . "\n" . $ticket['numero_table'] . '<br/>';
-												echo "N° Ticket : #";
-												$numTicket = $ticket['id_ticket'];
-												while (strlen($numTicket) < 3) {
-													$numTicket = '0' . $numTicket;
-												}
-												echo $numTicket . '<br>';
-												$status = "";
-												if ($ticket['statut'] == 'PAY') {
-													$status = "<p class='success'>PAY</p>";
-												} elseif ($ticket['statut'] == 'VAL') {
-													$status = "<p class='warning'>VALIDE</p>";
-												} else {
-													$status = "<p class='danger'>SAISIE</p>";
-												}
-												echo "statut : " . $status;
+												if ($commande['Etat'] == "En saisie") {
 												?>
-											</caption>
-											<thead>
-												<tr>
-													<th>Quantit&eacute;</th>
-													<th>Nom du Plat</th>
-													<th>Commentaires</th>
-												</tr>
-											</thead>
+													<td>
+														En Attente de Validation
+													</td>
+													<?php
+												} else {
 
-											<?php
-											$u = $ticket['id_ticket'];
-											$statmt17->execute();
-											$commandes = $statmt17->fetchAll();
-											foreach ($commandes as $commande) {
-											?>
-												<tbody>
-													<tr>
+													if ($commande['Etat'] == "Demandé") { ?>
 														<td>
-															<?php echo $commande['quantite']; ?>
+															<form method="POST">
+																<input type="hidden" name="action" value="etatEnCours">
+																<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
+																<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
+																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires'] ?>">
+																<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
+																<input type="submit" value="En cours">
+															</form>
 														</td>
-														<td>
-															<?php echo $commande['nom_plat']; ?>
-														</td>
-														<td>
-															<?php echo $commande['commentaires']; ?>
-														</td>
-													</tr>
-												</tbody>
-											<?php
-											}
-											?>
-										</table>
-									</div>
+														<?php } else {
+														if ($commande['Etat'] == "En cours") { ?>
+															<td>
+																<form method="POST">
+																	<input type="hidden" name="action" value="etatPret">
+																	<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
+																	<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
+																	<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']; ?>">
+																	<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
+																	<input type="submit" value="Prêt">
+																</form>
+															</td>
+														<?php } else { ?>
+															<td>
+																A servir
+															<td>
+													<?php }
+													}
+												} ?>
+											</tr>
+										</tbody>
+									<?php
+									}
+									?>
+								</table>
+							</div>
 						<?php
-								}
-						 ?>
+						}
+						?>
 					</div>
 
 				</div>
