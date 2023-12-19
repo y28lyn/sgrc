@@ -170,7 +170,7 @@ if ($_SESSION["role"] == "caisse") {
 					<button id="menu-btn">
 						<i><img class="icon_size" src="image\icone\bar.svg" alt="Icone Bars"></i>
 					</button>
-					<div class="theme-toggler" id="theme-toggler">
+						<div class="theme-toggler" id="theme-toggler">
 						<!-- Dark and Light -->
 						<i><img class="icon_darkmode" src="image\icone\darkmode.svg" alt="Icone Dark Mode"></i>
 					</div>
