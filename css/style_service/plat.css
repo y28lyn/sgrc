@@ -83,6 +83,7 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 table tbody tr td input{

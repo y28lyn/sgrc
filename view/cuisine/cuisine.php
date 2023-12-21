@@ -100,7 +100,7 @@ if ($_SESSION["role"] == "cuisine") {
 													<?php echo $commande['nom_plat']; ?>
 												</td>
 												<td>
-													<?php echo $commande['commentaires']; ?>
+													<?php echo $commande['commentaire']; ?>
 												</td>
 												<td>
 													<?php echo $commande['Etat']; ?>
@@ -120,7 +120,7 @@ if ($_SESSION["role"] == "cuisine") {
 																<input type="hidden" name="action" value="etatEnCours">
 																<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires'] ?>">
+																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaire'] ?>">
 																<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																<input type="submit" value="En cours">
 															</form>
@@ -132,18 +132,24 @@ if ($_SESSION["role"] == "cuisine") {
 																	<input type="hidden" name="action" value="etatPret">
 																	<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																	<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-																	<input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']; ?>">
+																	<input type="hidden" name="commentaire" value="<?php echo $commande['commentaire']; ?>">
 																	<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																	<input type="submit" value="Prêt">
 																</form>
 															</td>
+														<?php } else { ?><?php
+															if ($commande['Etat'] == "Prêt") { ?>
+															<td>
+																<p>A servir</p>
+															</td>
 														<?php } else { ?>
 															<td>
-																A servir
+																Fini
 															<td>
 													<?php }
 													}
-												} ?>
+												}
+											}?>
 											</tr>
 										</tbody>
 									<?php
