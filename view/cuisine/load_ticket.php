@@ -7,7 +7,7 @@
     $dateDuJour = date("Y-m-d");
     $requetePrixMenu = $pdo->prepare("SELECT PU FROM menu WHERE date_menu = :dateDuJour;");
     $requetePrixMenu->bindParam(':dateDuJour', $dateDuJour);
-    $requetePrixMenu->execute(); 
+    $requetePrixMenu->execute();
     $prixMenu = $requetePrixMenu->fetch();
     foreach ($tickets as $ticket) {
     ?>
@@ -55,7 +55,7 @@
                 $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire,ligne_ticket.Etat AS Etat, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat != "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire,Etat ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
                 $statmt17->bindParam(':id_ticket', $u, PDO::PARAM_INT);
                 $statmt17->execute();
-                
+
                 $commandes = $statmt17->fetchAll();
                 foreach ($commandes as $commande) {
                 ?>
@@ -88,7 +88,7 @@
                                             <input type="hidden" name="action" value="etatEnCours">
                                             <input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
                                             <input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-                                            <input type="hidden" name="commentaire" value="<?php echo $commande['commentaire'] ?>">
+                                            <input type="hidden" name="commentaire" value="<?php echo $commande['commentaires'] ?>">
                                             <input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
                                             <input type="submit" value="En cours">
                                         </form>
@@ -100,18 +100,24 @@
                                                 <input type="hidden" name="action" value="etatPret">
                                                 <input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
                                                 <input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-                                                <input type="hidden" name="commentaire" value="<?php echo $commande['commentaire']; ?>">
+                                                <input type="hidden" name="commentaire" value="<?php echo $commande['commentaires']; ?>">
                                                 <input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
                                                 <input type="submit" value="Prêt">
                                             </form>
                                         </td>
+                                        <?php } else { ?><?php
+                                                            if ($commande['Etat'] == "Prêt") { ?>
+                                        <td>
+                                            <p>A servir</p>
+                                        </td>
                                     <?php } else { ?>
                                         <td>
-                                            A servir
+                                            Fini
                                         <td>
-                                <?php }
-                                }
-                            } ?>
+                            <?php }
+                                                        }
+                                                    }
+                                                } ?>
                         </tr>
                     </tbody>
                 <?php

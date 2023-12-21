@@ -137,13 +137,19 @@ if ($_SESSION["role"] == "cuisine") {
 																	<input type="submit" value="Prêt">
 																</form>
 															</td>
+														<?php } else { ?><?php
+															if ($commande['Etat'] == "Prêt") { ?>
+															<td>
+																<p>A servir</p>
+															</td>
 														<?php } else { ?>
 															<td>
-																A servir
+																Fini
 															<td>
 													<?php }
 													}
-												} ?>
+												}
+											}?>
 											</tr>
 										</tbody>
 									<?php
