@@ -13,48 +13,52 @@ if (isset($_SESSION["role"])) {
                     //case gérant les ajouts/suppressions/modifications dans les différentes tables de la bdd
                     switch ($_POST['action']) {
                         case "ajouter table": {
-                                $id_t = htmlspecialchars($_POST['id_table']);
-                                $num_table = htmlspecialchars($_POST['numero_table']);
-                                $type_table = htmlspecialchars($_POST['type_table']);
-                                $vu_table = htmlspecialchars($_POST['vu']);
-
-                                $statmt = $pdo->prepare('SELECT * FROM sgr_table order by `numero_table`');
-                                $statmt->execute();
-                                $tables = $statmt->fetchAll(PDO::FETCH_ASSOC);
-
-                                $compteur = 0;
-
-                                foreach ($tables as $table) {
-                                    $tableNUM = $table['numero_table'];
-                                    if ($tableNUM === $num_table) {
-                                        $compteur += 1;
-                                    }
-                                }
-
-                                if ($compteur === 0) {
-                                    $pdo->query("INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUE(NULL, '$num_table' , '$type_table', '$vu_table')");
-                                    header('location: /SGRC/index.php?page=table');
-                                } else {
-                                    echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
-                                }
-
-                                $compteur = 0;
-
-
-                                break;
-                            }
-                        case "update table": {
-                                $id_t = htmlspecialchars($_POST['id_table']);
-                                $num_table = htmlspecialchars($_POST['numero_table']);
-                                $type_table = htmlspecialchars($_POST['type_table']);
-                                $vu_tb = htmlspecialchars($_POST['vu']);
-                                $vu_tb = ($vu_tb == 'Visible') ? '0' : '1';
-                                // Variable de id_menu en GET
-                                $reqUP = "UPDATE sgr_table SET numero_table='$num_table',type_table='$type_table',vu='$vu_tb' WHERE id_table ='$id_t'";
-                                $resulat = mysqli_query($link, $reqUP);
+                            $id_t = htmlspecialchars($_POST['id_table']);
+                            $num_table = htmlspecialchars($_POST['numero_table']);
+                            $type_table = htmlspecialchars($_POST['type_table']);
+                            $vu_table = htmlspecialchars($_POST['vu']);
+                        
+                            // Vérification si le numéro de table existe déjà
+                            $checkQuery = "SELECT id_table FROM sgr_table WHERE numero_table = ?";
+                            $checkStatement = $pdo->prepare($checkQuery);
+                            $checkStatement->execute([$num_table]);
+                            $existingTable = $checkStatement->fetch();
+                        
+                            if (!$existingTable) {
+                                $insertQuery = "INSERT INTO sgr_table (id_table, numero_table, type_table, vu) VALUES (NULL, ?, ?, ?)";
+                                $insertStatement = $pdo->prepare($insertQuery);
+                                $insertStatement->execute([$num_table, $type_table, $vu_table]);
                                 header('location: /SGRC/index.php?page=table');
-                                break;
+                            } else {
+                                echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
                             }
+                            break;
+                        }
+ 
+                        case "update table": {
+                            $id_t = htmlspecialchars($_POST['id_table']);
+                            $num_table = htmlspecialchars($_POST['numero_table']);
+                            $type_table = htmlspecialchars($_POST['type_table']);
+                            $vu_tb = htmlspecialchars($_POST['vu']);
+                            $vu_tb = ($vu_tb == 'Visible') ? '0' : '1';
+                        
+                            // Vérification si le numéro de table existe déjà
+                            $checkQuery = "SELECT id_table FROM sgr_table WHERE numero_table = ? AND id_table <> ?";
+                            $checkStatement = $pdo->prepare($checkQuery);
+                            $checkStatement->execute([$num_table, $id_t]);
+                            $existingTable = $checkStatement->fetch();
+                        
+                            if (!$existingTable) {
+                                $updateQuery = "UPDATE sgr_table SET numero_table=?, type_table=?, vu=? WHERE id_table=?";
+                                $updateStatement = $pdo->prepare($updateQuery);
+                                $updateStatement->execute([$num_table, $type_table, $vu_tb, $id_t]);
+                                header('location: /SGRC/index.php?page=table');
+                            } else {
+                                $_POST["id_t"] = $id_t;
+                                echo "<script> alert('ERREUR : le numéro de table existe déjà !')</script>";
+                            }
+                            break;
+                        }
 
                         case "vis table": {
                                 if (isset($_POST['id_table'])) {
@@ -1053,7 +1057,7 @@ if (isset($_SESSION["role"])) {
                 $statmt16->execute();
                 $ticketsBar = $statmt16->fetchAll(PDO::FETCH_ASSOC);
 
-                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire AS commentaires,ligne_ticket.Etat AS Etat, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat = "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire,Etat ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
+                $statmt17 = $pdo->prepare('SELECT ticket.id_ticket, plat.id_plat, plat.nom_plat, COUNT(nom_plat) AS quantite, ligne_ticket.commentaire,ligne_ticket.Etat AS Etat, categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat FROM ligne_ticket, plat, ticket,categorie_plat, sous_categorie  WHERE ticket.id_ticket = :id_ticket AND ticket.id_ticket = ligne_ticket.id_ticket AND plat.id_plat=ligne_ticket.id_plat AND type_plat = "boisson" AND categorie_plat.id_cat = sous_categorie.id_cat AND plat.id_sous_cat = sous_categorie.id_sous_cat GROUP BY nom_plat, ligne_ticket.commentaire,Etat ORDER BY categorie_plat.ordre_affichage_cat, sous_categorie.ordre_aff_sous_cat;');
                 $statmt17->bindParam(':id_ticket', $u, PDO::PARAM_INT);
                 include "view/bar/bar.php";
                 break;
@@ -1304,6 +1308,78 @@ if (isset($_SESSION["role"])) {
                                 header("Location:index.php?page=plat");
                                 break;
                             }
+
+                        case "etatDemande": {
+                            try{
+                                $id_ticket = $_POST['id_ticket'];
+                                $id_plat = $_POST['id_plat'];
+                                $commentaire = $_POST['commentaire'];
+                                $etat = "En saisie"; 
+
+                                // Vérifier si le commentaire est vide
+                                if ($commentaire == "") {
+                                    $commentaireCondition = 'commentaire IS NULL';
+                                } else {
+                                    $commentaireCondition = 'commentaire = :commentaire';
+                                }
+                                
+                                $sql = 'UPDATE ligne_ticket SET Etat = "Demandé" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition;
+                                $statmt = $pdo->prepare($sql);
+                                
+                                $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+
+                                // Ne lier le paramètre que si le commentaire n'est pas vide
+                                if ($commentaire != "") {
+                                    $statmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                }
+
+                                $statmt->execute();
+
+                            }
+                            catch(PDOException $e){
+                                echo $e->getMessage();
+                            }
+                            
+                            break;
+                        }
+
+                        case "etatServi": {
+                            try{
+                                $id_ticket = $_POST['id_ticket'];
+                                $id_plat = $_POST['id_plat'];
+                                $commentaire = $_POST['commentaire'];
+                                $etat = "Prêt"; 
+
+                                // Vérifier si le commentaire est vide
+                                if ($commentaire == "") {
+                                    $commentaireCondition = 'commentaire IS NULL';
+                                } else {
+                                    $commentaireCondition = 'commentaire = :commentaire';
+                                }
+                                
+                                $sql = 'UPDATE ligne_ticket SET Etat = "Servi" WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :etat AND '. $commentaireCondition;
+                                $statmt = $pdo->prepare($sql);
+                                
+                                $statmt->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                $statmt->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                $statmt->bindParam(':etat', $etat, PDO::PARAM_STR);
+
+                                // Ne lier le paramètre que si le commentaire n'est pas vide
+                                if ($commentaire != "") {
+                                    $statmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                }
+
+                                $statmt->execute();
+
+                            }
+                            catch(PDOException $e){
+                                echo $e->getMessage();
+                            }
+                            
+                            break;
+                        }
 
                         default: {
                             }

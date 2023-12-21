@@ -217,6 +217,7 @@ if ($_SESSION["role"] == "service") {
                                 </td>
                                 <!--Affichage form commentaire-->
                                 <td>
+                                
                                 <form method="POST">
 
                                     <input type="hidden" name="action" value="modifier_commentaire">
@@ -277,7 +278,7 @@ if ($_SESSION["role"] == "service") {
         </div>
 
 
-
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> 
         <!-- Script DarkMode -->
         <script src="/SGRC/js/source/dark_mode.js"></script>
         <!-- SCRIPT FONT AWESOME -->
@@ -352,6 +353,27 @@ if ($_SESSION["role"] == "service") {
         affichageCuisine.click();
         
     </script>
+
+    <script>
+		function load_tickets() {
+		// Récupérer les nouveaux tickets sans recharger la page entière en AJAX
+			$.ajax({
+				url: "/SGRC/view/service/prise_de_commande/load_ticket.php",
+				type: "GET",
+				data: {
+					idTicket: <?php echo json_encode($idTicket); ?>,
+					sqlQueries: <?php echo json_encode(array($statmt31)); ?>
+				}, // Passer les ticketsBar et les requêtes SQL via AJAX
+				success: function(data) {
+					// Mettre à jour seulement la partie nécessaire
+					$(".ticket_de_caisse").html(data);
+				}
+			});
+		}	
+
+		// Appeler la fonction toutes les 2 secondes
+		setInterval(load_tickets, 2000);
+	</script>
 
 
 </body>

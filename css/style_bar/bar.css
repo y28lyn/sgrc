@@ -133,7 +133,7 @@ input[value="En Saisie"] {
 }
 
 input[value="En cours"] {
-  background-color: #e2bc41;
+  background-color: #ffc40c;
 }
 
 input[value="Prêt"] {
@@ -141,5 +141,10 @@ input[value="Prêt"] {
 }
 
 input[value="Servi"] {
-  background-color: #565656;
+  background-color: #4a4a4a;
+}
+
+.etatEnAttente {
+  background-color: #424242 !important;
+  border-radius: 5px;
 }
