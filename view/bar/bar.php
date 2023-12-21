@@ -108,15 +108,14 @@ if ($_SESSION["role"] == "bar") {
 												<td>
 													<?php echo $commande['Etat']; ?>
 												</td>
-
 												<?php
 												if ($commande['Etat'] == "En saisie") {
 												?>
 													<td>
-														<input class="etatEnAttente" type="submit" value="En Attente">
-													</td>	
+														En Attente de Validation
+													</td>
 													<?php
-												} else {	
+												} else {
 
 													if ($commande['Etat'] == "Demandé") { ?>
 														<td>
@@ -124,7 +123,7 @@ if ($_SESSION["role"] == "bar") {
 																<input type="hidden" name="action" value="etatEnCours">
 																<input type="hidden" name="id_ticket" value="<?php echo $commande['id_ticket']; ?>">
 																<input type="hidden" name="id_plat" value="<?php echo $commande['id_plat']; ?>">
-																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaire']?>">
+																<input type="hidden" name="commentaire" value="<?php echo $commande['commentaire'] ?>">
 																<input type="hidden" name="etat" value="<?php echo $commande['Etat']; ?>">
 																<input type="submit" value="En cours">
 															</form>
@@ -141,20 +140,26 @@ if ($_SESSION["role"] == "bar") {
 																	<input type="submit" value="Prêt">
 																</form>
 															</td>
+															<?php } else { ?><?php
+																				if ($commande['Etat'] == "Prêt") { ?>
+															<td>
+																<p>A servir</p>
+															</td>
 														<?php } else { ?>
 															<td>
-																A servir
+																Fini
 															<td>
-													<?php }
+												<?php }
 													}
-												} ?>
+												}
+											} ?>
 											</tr>
 										</tbody>
 									<?php
 									}
 									?>
 								</table>
-							</div>	
+							</div>
 						<?php
 						}
 						?>
@@ -204,7 +209,7 @@ if ($_SESSION["role"] == "bar") {
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		function load_tickets() {
-		// Récupérer les nouveaux tickets sans recharger la page entière en AJAX
+			// Récupérer les nouveaux tickets sans recharger la page entière en AJAX
 			$.ajax({
 				url: "/SGRC/view/bar/load_ticket.php",
 				type: "GET",
@@ -217,11 +222,10 @@ if ($_SESSION["role"] == "bar") {
 					$(".card_ticket").html(data);
 				}
 			});
-		}	
+		}
 
 		// Appeler la fonction toutes les 2 secondes
 		setInterval(load_tickets, 2000);
-
 	</script>
 	</body>
 
