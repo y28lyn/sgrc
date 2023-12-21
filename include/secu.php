@@ -1241,7 +1241,7 @@ if (isset($_SESSION["role"])) {
                                     }
 
                                     // Modifie le commentaire d'une ligne du ticket
-                                    $sql = 'UPDATE `ligne_ticket` SET '.$commentaireCondition.' WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :Etat AND '.$oldCommentaireCondition.' LIMIT 1;';
+                                    $sql = 'UPDATE `ligne_ticket` SET ' . $commentaireCondition . ' WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :Etat AND ' . $oldCommentaireCondition . ' LIMIT 1;';
                                     $requeteUpdateCommentaire = $pdo->prepare($sql);
 
                                     $requeteUpdateCommentaire->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
@@ -1270,19 +1270,34 @@ if (isset($_SESSION["role"])) {
 
 
                         case "supprimer_ligne_ticket": {
-                                if (isset($_POST['id_ligne_ticket'])) {
-                                    //Supprime toutes les lignes du plat avec le commentaire / pas vraiment mais ça fonctionne (parce que l'on ajout pas les plat qui on le même commentaire)
-                                    $requeteDiminueLigneTicketCom = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ligne_ticket = :id_ligne_ticket");
-                                    $requeteDiminueLigneTicketCom->bindParam(':id_ligne_ticket', $_POST['id_ligne_ticket'], PDO::PARAM_INT);
-                                    $requeteDiminueLigneTicketCom->execute();
-                                } else {
+
+                                try {
                                     $id_plat = $_POST['id_plat'];
                                     $id_ticket = $_POST['id_ticket'];
+                                    $Etat = $_POST['Etat'];
+                                    $commentaire = $_POST['commentaire'];
+
+                                    // Vérifier si le commentaire est vide
+                                    if ($commentaire == "") {
+                                        $commentaireCondition = 'commentaire IS NULL';
+                                    } else {
+                                        $commentaireCondition = 'commentaire = :commentaire';
+                                    }
+
                                     //Supprime toutes les lignes du plat
-                                    $requeteDiminueLigneTicket = $pdo->prepare("DELETE FROM `ligne_ticket` WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND commentaire IS NULL");
-                                    $requeteDiminueLigneTicket->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
-                                    $requeteDiminueLigneTicket->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
-                                    $requeteDiminueLigneTicket->execute();
+                                    $sql = 'DELETE FROM ligne_ticket WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :Etat AND ' . $commentaireCondition;
+                                    $requeteSupprimerLigneTicket = $pdo->prepare($sql);
+                                    $requeteSupprimerLigneTicket->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
+                                    $requeteSupprimerLigneTicket->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
+                                    $requeteSupprimerLigneTicket->bindParam(':Etat', $Etat, PDO::PARAM_STR);
+
+                                    if ($commentaire != "") {
+                                        $requeteSupprimerLigneTicket->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                    }
+
+                                    $requeteSupprimerLigneTicket->execute();
+                                } catch (PDOException $e) {
+                                    echo $e->getMessage();
                                 }
 
                                 /*Refresh Ticket*/
