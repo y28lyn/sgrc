@@ -196,6 +196,7 @@ if ($_SESSION["role"] == "service") {
                     $id_p = $plat['id_plat'];
                     $quantite = $plat['quantite'];
                     $nomDuPlat = $plat['nom_plat'];
+                   
                     ?>
                     
                     <div class="container_ticket">
@@ -220,7 +221,9 @@ if ($_SESSION["role"] == "service") {
 
                                     <input type="hidden" name="action" value="modifier_commentaire">
 
-                                    <input type="text" name="commentaire" size="5" value="<?php echo !isset($_POST['commentaire']) ? NULL : htmlspecialchars($_POST['commentaire']) ;?>" placeholder="<?php echo $plat['commentaire'] ?>">
+                                    <input type="text" name="commentaire" size="5" value="<?php echo isset($_POST['commentaire']) ? htmlspecialchars($_POST['commentaire']) : $plat['commentaire'] ;?>" placeholder="<?php echo $plat['commentaire'] ?>">
+
+                                    <input type="hidden" name="old_commentaire" value="<?php echo $plat['commentaire']; ?>">
 
                                     <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
 
@@ -228,7 +231,9 @@ if ($_SESSION["role"] == "service") {
                                     
                                     <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
 
+
                                 </td>
+                              
                                 <!--Affichage bouton validation form commentaire-->
                                 <td>
                                         <button class="logo" type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>

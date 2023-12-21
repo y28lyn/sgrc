@@ -1188,7 +1188,7 @@ if (isset($_SESSION["role"])) {
                                     $id_ticket = $_POST['id_ticket'];
                                     $commentaire = $_POST['commentaire'];
                                     $Etat = $_POST['Etat'];
-                                    
+
                                     // Vérifier si le commentaire est vide
                                     if ($commentaire == "") {
                                         $commentaireCondition = 'commentaire IS NULL';
@@ -1228,32 +1228,29 @@ if (isset($_SESSION["role"])) {
 
                                     // Vérifier si le commentaire est vide
                                     if ($commentaire == "") {
-                                        $commentaireCondition = 'commentaire IS NULL';
+                                        $commentaireCondition = 'commentaire = NULL';
                                     } else {
-                                        $commentaireCondition = 'commentaire = :commentaire';
+                                        $commentaireCondition = 'commentaire = :newCommentaire';
                                     }
 
-                                    // Vérifier si le commentaire est vide
+                                    // Vérifier si l'ancien commentaire est vide
                                     if ($oldCommentaire == "") {
                                         $oldCommentaireCondition = 'commentaire IS NULL';
                                     } else {
-                                        $oldCommentaireCondition = 'commentaire = :commentaire';
+                                        $oldCommentaireCondition = 'commentaire = :oldCommentaire';
                                     }
 
-                                    //Modifie le commentaire d'une ligne du ticket
-                                    
-                                    $sql= 'UPDATE `ligne_ticket` SET '.$commentaireCondition.' WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :Etat AND ' . $oldCommentaireCondition . ' LIMIT 1';
+                                    // Modifie le commentaire d'une ligne du ticket
+                                    $sql = 'UPDATE `ligne_ticket` SET '.$commentaireCondition.' WHERE id_ticket = :id_ticket AND id_plat = :id_plat AND Etat = :Etat AND '.$oldCommentaireCondition.' LIMIT 1;';
                                     $requeteUpdateCommentaire = $pdo->prepare($sql);
 
                                     $requeteUpdateCommentaire->bindParam(':id_ticket', $id_ticket, PDO::PARAM_INT);
-
                                     $requeteUpdateCommentaire->bindParam(':id_plat', $id_plat, PDO::PARAM_INT);
-
-                                    $requeteUpdateCommentaire->bindParam(':Etat', $Etat, PDO::PARAM_STR);	
+                                    $requeteUpdateCommentaire->bindParam(':Etat', $Etat, PDO::PARAM_STR);
 
                                     // Ne lier le paramètre que si le commentaire n'est pas vide
                                     if ($commentaire != "") {
-                                        $requeteUpdateCommentaire->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+                                        $requeteUpdateCommentaire->bindParam(':newCommentaire', $commentaire, PDO::PARAM_STR);
                                     }
 
                                     // Ne lier le paramètre que si l'ancien commentaire n'est pas vide
@@ -1262,8 +1259,6 @@ if (isset($_SESSION["role"])) {
                                     }
 
                                     $requeteUpdateCommentaire->execute();
-
-                            
                                 } catch (PDOException $e) {
                                     echo $e->getMessage();
                                 }
