@@ -427,7 +427,7 @@ if ($_SESSION["role"] == "service") {
             }
 
             // Appeler la fonction toutes les 2 secondes
-            setInterval(load_tickets, 60000);
+            setInterval(load_tickets, 2000);
         </script>
 
 
