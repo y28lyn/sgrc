@@ -187,127 +187,142 @@ if ($_SESSION["role"] == "service") {
         <!--Affichage de la commande-->
         <div class="ticket_de_caisse">
             <table>
-                <?php
-                foreach ($platsConsolides as $plat) {
+                <thead>
+                    <tr>
+                        <th>Plat</th>
+                        <th>Quantité</th>
+                        <th>Etat</th>
+                        <th>Commentaire</th>
+                        <th>Supprimer</th>
+                        <th>Diminuer</th>
+                        <th>Demander</th>
+                        <th>Servi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($platsConsolides as $plat) {
 
-                    $id_p = $plat['id_plat'];
-                    $quantite = $plat['quantite'];
-                    $nomDuPlat = $plat['nom_plat'];
+                        $id_p = $plat['id_plat'];
+                        $quantite = $plat['quantite'];
+                        $nomDuPlat = $plat['nom_plat'];
 
-                ?>
+                    ?>
 
-                    <div class="container_ticket">
-                        <tr>
+                        <div class="container_ticket">
+                            <tr>
 
-                            <!--Affichage nom du palt-->
-                            <td class="titre">
-                                <?php echo $plat['nom_plat']; ?>
-                            </td>
-
-                            <!--Affichez quantite du palt-->
-                            <td>
-                                <?php echo $plat['quantite']; ?>
-                            </td>
-
-
-
-                            <td>
-                                <?php echo $plat['Etat']; ?>
-                            </td>
-
-
-                            <!--Form gestion Affichage et gestion des états-->
-                            <?php
-                            if ($plat['Etat'] == "En saisie") {
-                            ?>
-                                <!--Affichage form commentaire-->
-                                <td>
-
-                                    <form method="POST">
-
-                                        <input type="hidden" name="action" value="modifier_commentaire">
-
-                                        <input type="text" name="commentaire" size="5" value="<?php echo isset($_POST['commentaire']) ? htmlspecialchars($_POST['commentaire']) : $plat['commentaire']; ?>" placeholder="<?php echo $plat['commentaire'] ?>">
-
-                                        <input type="hidden" name="old_commentaire" value="<?php echo $plat['commentaire']; ?>">
-
-                                        <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
-
-                                        <input type="hidden" name="Etat" value="<?php echo $plat['Etat']; ?>">
-
-                                        <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
-
-
+                                <!--Affichage nom du palt-->
+                                <td class="titre">
+                                    <?php echo $plat['nom_plat']; ?>
                                 </td>
 
-                                <!--Affichage bouton validation form commentaire-->
+                                <!--Affichez quantite du palt-->
                                 <td>
-                                    <button class="logo" type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
-                                    </form>
+                                    <?php echo $plat['quantite']; ?>
                                 </td>
 
 
-                                <!--Form et bouton suppression d'un plat-->
-                                <td>
-                                    <form method="POST">
-                                        <button class="logo" type="submit"> <i class="fa-solid fa-trash-can"></i></button>
-                                        <input type="hidden" name="action" value="supprimer_ligne_ticket">
-                                        <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
-                                        <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
-                                        <input type="hidden" name="Etat" value="<?php echo $plat['Etat']; ?>">
-                                        <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
-                                    </form>
-                                </td>
 
-                                <!--Form et bouton suppression d'une itération d'un plats-->
                                 <td>
-                                    <form class="quantity-ticket" method="POST">
-                                        <button class="quantity-minus" type="submit">-</button>
-                                        <input type="hidden" name="action" value="diminue_ligne_ticket">
-                                        <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
-                                        <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
-                                        <input type="hidden" name="Etat" value="<?php echo $plat['Etat']; ?>">
-                                        <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
-                                    </form>
+                                    <?php echo $plat['Etat']; ?>
                                 </td>
 
 
-                                <td>
-                                    <form method="POST">
-                                        <input type="hidden" name="action" value="etatDemande">
-                                        <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
-                                        <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
-                                        <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire'] ?>">
-                                        <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
-                                        <input type="submit" value="Demander">
-                                    </form>
-                                </td>
+                                <!--Form gestion Affichage et gestion des états-->
                                 <?php
-                            } else {
-
-                                if ($plat['Etat'] == "Prêt") { ?>
+                                if ($plat['Etat'] == "En saisie") {
+                                ?>
+                                    <!--Affichage form commentaire-->
                                     <td>
+
                                         <form method="POST">
-                                            <input type="hidden" name="action" value="etatServi">
-                                            <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+
+                                            <input type="hidden" name="action" value="modifier_commentaire">
+
+                                            <input type="text" name="commentaire" size="5" value="<?php echo isset($_POST['commentaire']) ? htmlspecialchars($_POST['commentaire']) : $plat['commentaire']; ?>" placeholder="<?php echo $plat['commentaire'] ?>">
+
+                                            <input type="hidden" name="old_commentaire" value="<?php echo $plat['commentaire']; ?>">
+
                                             <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
-                                            <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
-                                            <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
-                                            <input type="submit" value="Servi">
+
+                                            <input type="hidden" name="Etat" value="<?php echo $plat['Etat']; ?>">
+
+                                            <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+
+
+                                    </td>
+
+                                    <!--Affichage bouton validation form commentaire-->
+                                    <td>
+                                        <button class="logo" type="submit" value="modifier" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
                                         </form>
                                     </td>
 
-                                <?php  } else { ?>
+
+                                    <!--Form et bouton suppression d'un plat-->
                                     <td>
-
+                                        <form method="POST">
+                                            <button class="logo" type="submit"> <i class="fa-solid fa-trash-can"></i></button>
+                                            <input type="hidden" name="action" value="supprimer_ligne_ticket">
+                                            <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                            <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
+                                            <input type="hidden" name="Etat" value="<?php echo $plat['Etat']; ?>">
+                                            <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                        </form>
                                     </td>
-                        <?php }
+
+                                    <!--Form et bouton suppression d'une itération d'un plats-->
+                                    <td>
+                                        <form class="quantity-ticket" method="POST">
+                                            <button class="quantity-minus" type="submit">-</button>
+                                            <input type="hidden" name="action" value="diminue_ligne_ticket">
+                                            <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                            <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
+                                            <input type="hidden" name="Etat" value="<?php echo $plat['Etat']; ?>">
+                                            <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                        </form>
+                                    </td>
+
+
+                                    <td>
+                                        <form method="POST">
+                                            <input type="hidden" name="action" value="etatDemande">
+                                            <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                            <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                            <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire'] ?>">
+                                            <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                            <input type="submit" value="Demander">
+                                        </form>
+                                    </td>
+                                    <?php
+                                } else {
+
+                                    if ($plat['Etat'] == "Prêt") { ?>
+                                        <td>
+                                            <form method="POST">
+                                                <input type="hidden" name="action" value="etatServi">
+                                                <input type="hidden" name="id_ticket" value="<?php echo $plat['id_ticket']; ?>">
+                                                <input type="hidden" name="id_plat" value="<?php echo $plat['id_plat']; ?>">
+                                                <input type="hidden" name="commentaire" value="<?php echo $plat['commentaire']; ?>">
+                                                <input type="hidden" name="etat" value="<?php echo $plat['Etat']; ?>">
+                                                <input type="submit" value="Servi">
+                                            </form>
+                                        </td>
+
+                                    <?php  } else { ?>
+                                        <td>
+
+                                        </td>
+                            <?php }
+                                }
                             }
-                        }
 
-                        ?>
+                            ?>
 
-
+                            </tr>
+                        </div>
+                </tbody>
             </table>
         </div>
 
@@ -412,7 +427,7 @@ if ($_SESSION["role"] == "service") {
             }
 
             // Appeler la fonction toutes les 2 secondes
-            setInterval(load_tickets, 2000);
+            setInterval(load_tickets, 60000);
         </script>
 
 
