@@ -51,8 +51,8 @@ foreach ($mes_lignes_tickets as $ligne) {
             <tr>
                 <th>Plat</th>
                 <th>Quantité</th>
-                <th>Etat</th>
                 <th>Commentaire</th>
+                <th>Etat</th>
                 <th>Supprimer</th>
                 <th>Diminuer</th>
                 <th>Demander</th>
@@ -82,8 +82,12 @@ foreach ($mes_lignes_tickets as $ligne) {
                             <?php echo $plat['quantite']; ?>
                         </td>
 
+                        <!--Affichage commentaire du plat-->
+                        <td>
+                            <?php echo $plat['commentaire']; ?>
+                        </td>
 
-
+                        <!--Affichage etat du plat-->
                         <td>
                             <?php echo $plat['Etat']; ?>
                         </td>

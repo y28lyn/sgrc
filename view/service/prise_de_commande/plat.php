@@ -223,10 +223,16 @@ if ($_SESSION["role"] == "service") {
                                 </td>
 
 
+                                <!--Affichage commentaire du plat-->
+                                <td>
+                                    <?php echo $plat['commentaire']; ?>
+                                </td>
 
+                                <!--Affichage etat du plat-->
                                 <td>
                                     <?php echo $plat['Etat']; ?>
                                 </td>
+
 
 
                                 <!--Form gestion Affichage et gestion des états-->
@@ -427,7 +433,7 @@ if ($_SESSION["role"] == "service") {
             }
 
             // Appeler la fonction toutes les 2 secondes
-            setInterval(load_tickets, 20000);
+            setInterval(load_tickets, 10000);
         </script>
 
 
